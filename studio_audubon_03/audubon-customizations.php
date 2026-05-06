@@ -65,7 +65,7 @@ function audubon_register_meta_boxes() {
     add_meta_box( 'audubon_news_meta', '表示日時（フリーテキスト）・出演アクター',
         'audubon_render_news_meta_box', 'news_list', 'normal', 'high' );
 
-    add_meta_box( 'audubon_slide_meta', 'スライド設定（出演テキスト・リンク）',
+    add_meta_box( 'audubon_slide_meta', 'スライド下のテキスト・リンク',
         'audubon_render_slide_meta_box', 'slides', 'normal', 'high' );
 }
 
@@ -214,18 +214,27 @@ function audubon_render_slide_meta_box( $post ) {
     $caption = get_post_meta( $post->ID, '_audubon_slide_caption', true );
     $link    = get_post_meta( $post->ID, '_audubon_slide_link', true );
     ?>
-    <p>
-        <span class="description">トップページのスライダーで「ポスター下のテキスト」「リンク先」として使われます。</span>
+    <p style="margin:0 0 6px;">
+        <label for="audubon_slide_caption" style="font-size:14px;">
+            <strong>スライド下に表示するテキスト（1行）</strong>
+        </label>
     </p>
-    <p>
-        <label for="audubon_slide_caption"><strong>ポスター下に表示するテキスト（例: 山田太郎 出演）</strong></label><br>
+    <p style="margin:0 0 6px;">
         <input type="text" id="audubon_slide_caption" name="audubon_slide_caption"
-               value="<?php echo esc_attr( $caption ); ?>" style="width:100%;">
+               value="<?php echo esc_attr( $caption ); ?>"
+               style="width:100%;font-size:18px;padding:8px 10px;line-height:1.4;"
+               placeholder="例: 山田太郎 出演">
     </p>
-    <p>
-        <label for="audubon_slide_link"><strong>リンク先URL（任意）</strong></label><br>
+    <p style="margin:0 0 18px;color:#666;">
+        トップページのスライダーで、A4ポスター画像の真下に1行で表示されます。空欄の場合は何も表示されません。
+    </p>
+    <p style="margin:0 0 6px;">
+        <label for="audubon_slide_link"><strong>リンク先URL（任意）</strong></label>
+    </p>
+    <p style="margin:0;">
         <input type="url" id="audubon_slide_link" name="audubon_slide_link"
                value="<?php echo esc_attr( $link ); ?>" style="width:100%;" placeholder="https://...">
+        <span class="description">スライドをクリックしたときの遷移先。空欄ならクリックしても遷移しません。</span>
     </p>
     <?php
 }
