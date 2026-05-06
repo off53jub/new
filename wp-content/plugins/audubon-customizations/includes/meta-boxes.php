@@ -32,10 +32,10 @@ function audubon_register_meta_boxes() {
     );
 
     add_meta_box(
-        'audubon_banner_meta',
-        'バナー設定',
-        'audubon_render_banner_meta_box',
-        'audubon_banner',
+        'audubon_slide_meta',
+        'スライド設定（出演テキスト・リンク）',
+        'audubon_render_slide_meta_box',
+        'slides',
         'normal',
         'high'
     );
@@ -184,23 +184,24 @@ function audubon_render_information_meta_box( $post ) {
     <?php
 }
 
-function audubon_render_banner_meta_box( $post ) {
-    wp_nonce_field( 'audubon_banner_meta', 'audubon_banner_meta_nonce' );
-    $caption = get_post_meta( $post->ID, '_audubon_banner_caption', true );
-    $link    = get_post_meta( $post->ID, '_audubon_banner_link', true );
+function audubon_render_slide_meta_box( $post ) {
+    wp_nonce_field( 'audubon_slide_meta', 'audubon_slide_meta_nonce' );
+    $caption = get_post_meta( $post->ID, '_audubon_slide_caption', true );
+    $link    = get_post_meta( $post->ID, '_audubon_slide_link', true );
     ?>
     <p>
-        <span class="description">アイキャッチ画像にA4比率（210:297）のポスター画像を設定してください。</span>
+        <span class="description">[audubon_slides] ショートコードで3分割A4ポスターとして表示するときに使用される情報です。既存テーマのスライド表示には影響しません。</span>
     </p>
     <p>
-        <label for="audubon_banner_caption"><strong>キャプション（例: 山田太郎 出演）</strong></label><br>
-        <input type="text" id="audubon_banner_caption" name="audubon_banner_caption"
+        <label for="audubon_slide_caption"><strong>ポスター下に表示するテキスト（例: 山田太郎 出演）</strong></label><br>
+        <input type="text" id="audubon_slide_caption" name="audubon_slide_caption"
                value="<?php echo esc_attr( $caption ); ?>" style="width:100%;">
     </p>
     <p>
-        <label for="audubon_banner_link"><strong>リンク先URL（任意）</strong></label><br>
-        <input type="url" id="audubon_banner_link" name="audubon_banner_link"
+        <label for="audubon_slide_link"><strong>リンク先URL（任意）</strong></label><br>
+        <input type="url" id="audubon_slide_link" name="audubon_slide_link"
                value="<?php echo esc_attr( $link ); ?>" style="width:100%;" placeholder="https://...">
+        <br><span class="description">空の場合、既存の slides CPT に設定されたリンクを優先します（テーマ依存）。</span>
     </p>
     <?php
 }
@@ -267,16 +268,16 @@ function audubon_save_meta_boxes( $post_id, $post ) {
         update_post_meta( $post_id, '_audubon_related_actors', $actors );
     }
 
-    // Banner
-    if ( $post->post_type === 'audubon_banner'
-        && isset( $_POST['audubon_banner_meta_nonce'] )
-        && wp_verify_nonce( $_POST['audubon_banner_meta_nonce'], 'audubon_banner_meta' ) ) {
+    // Slide (既存slides CPTへの追加メタ)
+    if ( $post->post_type === 'slides'
+        && isset( $_POST['audubon_slide_meta_nonce'] )
+        && wp_verify_nonce( $_POST['audubon_slide_meta_nonce'], 'audubon_slide_meta' ) ) {
 
-        $caption = isset( $_POST['audubon_banner_caption'] ) ? sanitize_text_field( wp_unslash( $_POST['audubon_banner_caption'] ) ) : '';
-        update_post_meta( $post_id, '_audubon_banner_caption', $caption );
+        $caption = isset( $_POST['audubon_slide_caption'] ) ? sanitize_text_field( wp_unslash( $_POST['audubon_slide_caption'] ) ) : '';
+        update_post_meta( $post_id, '_audubon_slide_caption', $caption );
 
-        $link = isset( $_POST['audubon_banner_link'] ) ? esc_url_raw( wp_unslash( $_POST['audubon_banner_link'] ) ) : '';
-        update_post_meta( $post_id, '_audubon_banner_link', $link );
+        $link = isset( $_POST['audubon_slide_link'] ) ? esc_url_raw( wp_unslash( $_POST['audubon_slide_link'] ) ) : '';
+        update_post_meta( $post_id, '_audubon_slide_link', $link );
     }
 
     // Work

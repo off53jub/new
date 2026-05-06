@@ -45,25 +45,21 @@ add_action( 'pre_get_posts', function ( $query ) {
     }
 } );
 
-// Banner一覧にキャプション列
-add_filter( 'manage_audubon_banner_posts_columns', function ( $columns ) {
+// 既存 slides 一覧に「出演テキスト」列を追加
+add_filter( 'manage_slides_posts_columns', function ( $columns ) {
     $new = array();
     foreach ( $columns as $key => $label ) {
         $new[ $key ] = $label;
         if ( $key === 'title' ) {
-            $new['banner_thumb']   = 'ポスター';
-            $new['banner_caption'] = 'キャプション';
+            $new['audubon_slide_caption'] = '出演テキスト';
         }
     }
     return $new;
 } );
 
-add_action( 'manage_audubon_banner_posts_custom_column', function ( $column, $post_id ) {
-    if ( $column === 'banner_thumb' ) {
-        echo get_the_post_thumbnail( $post_id, array( 60, 85 ) );
-    }
-    if ( $column === 'banner_caption' ) {
-        echo esc_html( get_post_meta( $post_id, '_audubon_banner_caption', true ) );
+add_action( 'manage_slides_posts_custom_column', function ( $column, $post_id ) {
+    if ( $column === 'audubon_slide_caption' ) {
+        echo esc_html( get_post_meta( $post_id, '_audubon_slide_caption', true ) );
     }
 }, 10, 2 );
 

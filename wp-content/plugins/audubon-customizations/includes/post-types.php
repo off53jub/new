@@ -58,27 +58,9 @@ function audubon_register_post_types() {
         'show_in_rest'  => true,
     ) );
 
-    // バナーポスター（Banner Poster）
-    register_post_type( 'audubon_banner', array(
-        'labels' => array(
-            'name'               => 'バナー',
-            'singular_name'      => 'バナー',
-            'menu_name'          => 'バナー',
-            'add_new'            => '新規追加',
-            'add_new_item'       => '新規バナーを追加',
-            'edit_item'          => 'バナーを編集',
-            'new_item'           => '新規バナー',
-            'view_item'          => 'バナーを表示',
-            'search_items'       => 'バナーを検索',
-            'not_found'          => 'バナーが見つかりません',
-            'not_found_in_trash' => 'ゴミ箱にバナーはありません',
-        ),
-        'public'        => false,
-        'show_ui'       => true,
-        'menu_icon'     => 'dashicons-images-alt2',
-        'menu_position' => 7,
-        'supports'      => array( 'title', 'thumbnail', 'page-attributes' ),
-    ) );
+    // 既存の `slides` CPT は本プラグインでは登録しません（テーマまたは別プラグイン側で登録済みのため）。
+    // includes/meta-boxes.php で `slides` にキャプション・リンク用メタボックスを追加し、
+    // includes/shortcodes.php の [audubon_slides] で3分割A4ポスターの自動スライダーとして表示します。
 
     // Works（作品）
     register_post_type( 'audubon_work', array(

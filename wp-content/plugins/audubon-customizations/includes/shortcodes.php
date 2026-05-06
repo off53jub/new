@@ -2,7 +2,7 @@
 /**
  * ショートコード。
  *
- * - [audubon_banner]                 トップページ用 3分割A4バナー（自動スライド）
+ * - [audubon_slides]                 既存 `slides` CPTを使った3分割A4自動スライダー
  * - [audubon_works limit="-1"]       Works一覧（A4ポスターグリッド、静的）
  * - [audubon_actor_links id=""]      アクターページ用「最新の出演作品 / プロフィールPDF」リンク
  * - [audubon_information_date]       Information本文/ループ内で放映日時を表示
@@ -12,15 +12,15 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-add_shortcode( 'audubon_banner', 'audubon_shortcode_banner' );
-function audubon_shortcode_banner( $atts ) {
+add_shortcode( 'audubon_slides', 'audubon_shortcode_slides' );
+function audubon_shortcode_slides( $atts ) {
     $atts = shortcode_atts( array(
         'visible'  => 3,      // 一度に見せる枚数
         'interval' => 4000,   // 自動スライド間隔（ms）
-    ), $atts, 'audubon_banner' );
+    ), $atts, 'audubon_slides' );
 
-    $banners = audubon_get_banner_posters();
-    if ( empty( $banners ) ) {
+    $slides = audubon_get_slides();
+    if ( empty( $slides ) ) {
         return '';
     }
 
@@ -32,10 +32,10 @@ function audubon_shortcode_banner( $atts ) {
         <button class="audubon-banner__nav audubon-banner__nav--prev" aria-label="前へ">‹</button>
         <div class="audubon-banner__viewport">
             <ul class="audubon-banner__track">
-                <?php foreach ( $banners as $banner ) :
-                    $caption = get_post_meta( $banner->ID, '_audubon_banner_caption', true );
-                    $link    = get_post_meta( $banner->ID, '_audubon_banner_link', true );
-                    $thumb   = get_the_post_thumbnail( $banner->ID, 'large', array( 'class' => 'audubon-banner__image' ) );
+                <?php foreach ( $slides as $slide ) :
+                    $caption = get_post_meta( $slide->ID, '_audubon_slide_caption', true );
+                    $link    = get_post_meta( $slide->ID, '_audubon_slide_link', true );
+                    $thumb   = get_the_post_thumbnail( $slide->ID, 'large', array( 'class' => 'audubon-banner__image' ) );
                     if ( ! $thumb ) {
                         continue;
                     }

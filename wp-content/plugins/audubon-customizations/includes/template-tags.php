@@ -89,11 +89,14 @@ function audubon_get_information_label( $post_id = null ) {
 }
 
 /**
- * バナーポスター一覧（menu_order昇順、なければ作成日降順）。
+ * 既存 `slides` CPTのスライド一覧（menu_order昇順、なければ作成日降順）。
  */
-function audubon_get_banner_posters( $limit = -1 ) {
+function audubon_get_slides( $limit = -1 ) {
+    if ( ! post_type_exists( 'slides' ) ) {
+        return array();
+    }
     return get_posts( array(
-        'post_type'      => 'audubon_banner',
+        'post_type'      => 'slides',
         'posts_per_page' => $limit,
         'orderby'        => array( 'menu_order' => 'ASC', 'date' => 'DESC' ),
         'post_status'    => 'publish',
