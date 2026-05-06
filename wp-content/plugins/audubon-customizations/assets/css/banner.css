@@ -1,0 +1,86 @@
+/* バナー：A4ポスター3分割の自動スライダー（210:297） */
+.audubon-banner {
+    position: relative;
+    width: 100%;
+    margin: 0 auto 2rem;
+    padding: 0 40px;
+    box-sizing: border-box;
+}
+
+.audubon-banner__viewport {
+    overflow: hidden;
+    width: 100%;
+}
+
+.audubon-banner__track {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    transition: transform 0.6s cubic-bezier(.23,1,.32,1);
+    will-change: transform;
+}
+
+/* デフォルトは3列、タブレットで2列、スマホで1列 */
+.audubon-banner__item {
+    flex: 0 0 calc(100% / 3);
+    box-sizing: border-box;
+    padding: 0 12px;
+    text-align: center;
+}
+
+@media (max-width: 900px) {
+    .audubon-banner__item { flex: 0 0 50%; }
+}
+@media (max-width: 600px) {
+    .audubon-banner__item { flex: 0 0 100%; }
+}
+
+.audubon-banner__poster {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 210 / 297;
+    overflow: hidden;
+    background: #f4f4f4;
+}
+
+.audubon-banner__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.audubon-banner__caption {
+    margin: 0.75rem 0 0;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: #222;
+}
+
+.audubon-banner__link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+.audubon-banner__link:hover { opacity: 0.85; }
+
+.audubon-banner__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    border: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 1;
+    z-index: 2;
+}
+.audubon-banner__nav:hover { background: rgba(0,0,0,0.8); }
+.audubon-banner__nav--prev { left: 0; }
+.audubon-banner__nav--next { right: 0; }
