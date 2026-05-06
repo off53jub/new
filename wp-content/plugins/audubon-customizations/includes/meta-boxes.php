@@ -1,10 +1,12 @@
 <?php
 /**
- * カスタムフィールド（Meta Boxes）。
- * - アクター: プロフィールPDF / 最新の出演情報（Information投稿の選択）
- * - Information: 放映日時（任意の日時を入力可能）
- * - バナー: ポスター画像 / キャプション（○○出演など）/ リンク先
- * - Works: ポスター画像 / 公開年 / リンク先
+ * 既存CPTに追加するメタボックス。
+ *
+ * - actor       : プロフィールPDF / 最新の出演 (news_list)
+ * - news_list   : 放映日時（フリーテキスト）/ 並び替え用日付 / 出演アクター
+ * - slides      : ポスター下に表示するテキスト / リンク先
+ *
+ * メタキーは全て `_audubon_*` で名前空間化し、既存フィールドと衝突しません。
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -15,18 +17,18 @@ add_action( 'add_meta_boxes', 'audubon_register_meta_boxes' );
 function audubon_register_meta_boxes() {
     add_meta_box(
         'audubon_actor_meta',
-        'アクター情報',
+        'アクター追加情報（プロフィールPDF / 最新の出演）',
         'audubon_render_actor_meta_box',
-        'audubon_actor',
+        'actor',
         'normal',
         'high'
     );
 
     add_meta_box(
-        'audubon_information_meta',
-        '放映・公開日時',
-        'audubon_render_information_meta_box',
-        'audubon_information',
+        'audubon_news_meta',
+        '放映日時・出演アクター',
+        'audubon_render_news_meta_box',
+        'news_list',
         'side',
         'high'
     );
@@ -36,15 +38,6 @@ function audubon_register_meta_boxes() {
         'スライド設定（出演テキスト・リンク）',
         'audubon_render_slide_meta_box',
         'slides',
-        'normal',
-        'high'
-    );
-
-    add_meta_box(
-        'audubon_work_meta',
-        'Work設定',
-        'audubon_render_work_meta_box',
-        'audubon_work',
         'normal',
         'high'
     );
@@ -68,15 +61,15 @@ function audubon_get_pdf_display( $attachment_id ) {
 function audubon_render_actor_meta_box( $post ) {
     wp_nonce_field( 'audubon_actor_meta', 'audubon_actor_meta_nonce' );
 
-    $profile_pdf_id   = get_post_meta( $post->ID, '_audubon_profile_pdf_id', true );
-    $latest_info_id   = get_post_meta( $post->ID, '_audubon_latest_information_id', true );
-    $auto_latest      = get_post_meta( $post->ID, '_audubon_auto_latest_information', true );
+    $profile_pdf_id = get_post_meta( $post->ID, '_audubon_profile_pdf_id', true );
+    $latest_info_id = get_post_meta( $post->ID, '_audubon_latest_information_id', true );
+    $auto_latest    = get_post_meta( $post->ID, '_audubon_auto_latest_information', true );
     if ( $auto_latest === '' ) {
         $auto_latest = '1';
     }
 
-    $informations = get_posts( array(
-        'post_type'      => 'audubon_information',
+    $news_items = get_posts( array(
+        'post_type'      => 'news_list',
         'posts_per_page' => -1,
         'orderby'        => 'date',
         'order'          => 'DESC',
@@ -97,20 +90,20 @@ function audubon_render_actor_meta_box( $post ) {
     <p>
         <label>
             <input type="checkbox" name="audubon_auto_latest_information" value="1" <?php checked( $auto_latest, '1' ); ?>>
-            <strong>最新の出演作品（Information）を自動的にリンクする</strong>
+            <strong>最新の出演（ニュース記事）を自動的にリンクする</strong>
         </label>
     </p>
     <p>
-        <label><strong>手動で出演作品を指定する場合</strong></label><br>
+        <label><strong>手動で出演ニュース記事を指定する場合</strong></label><br>
         <select name="audubon_latest_information_id" style="width:100%;max-width:480px;">
             <option value="">— 選択しない（自動）—</option>
-            <?php foreach ( $informations as $info ) : ?>
-                <option value="<?php echo esc_attr( $info->ID ); ?>" <?php selected( $latest_info_id, $info->ID ); ?>>
-                    <?php echo esc_html( $info->post_title ); ?>
+            <?php foreach ( $news_items as $news ) : ?>
+                <option value="<?php echo esc_attr( $news->ID ); ?>" <?php selected( $latest_info_id, $news->ID ); ?>>
+                    <?php echo esc_html( $news->post_title ); ?>
                 </option>
             <?php endforeach; ?>
         </select>
-        <br><span class="description">「自動的にリンクする」がONの場合、最新の関連Information記事（このアクターを紐付けたもの、または下記から手動で選択したもの）が優先されます。</span>
+        <br><span class="description">「自動」がONの場合は、このアクターが紐付けられたニュース記事のうち最新のものが表示されます。手動指定があればそちらが優先されます。</span>
     </p>
 
     <script>
@@ -142,32 +135,35 @@ function audubon_render_actor_meta_box( $post ) {
     <?php
 }
 
-function audubon_render_information_meta_box( $post ) {
-    wp_nonce_field( 'audubon_information_meta', 'audubon_information_meta_nonce' );
-    $broadcast_date = get_post_meta( $post->ID, '_audubon_broadcast_date', true );
-    $broadcast_label = get_post_meta( $post->ID, '_audubon_broadcast_label', true );
+function audubon_render_news_meta_box( $post ) {
+    wp_nonce_field( 'audubon_news_meta', 'audubon_news_meta_nonce' );
+
+    $broadcast_text = get_post_meta( $post->ID, '_audubon_broadcast_text', true );
+    $broadcast_sort = get_post_meta( $post->ID, '_audubon_broadcast_sort', true );
 
     $related_actors = get_post_meta( $post->ID, '_audubon_related_actors', true );
     if ( ! is_array( $related_actors ) ) {
         $related_actors = array();
     }
     $actors = get_posts( array(
-        'post_type'      => 'audubon_actor',
+        'post_type'      => 'actor',
         'posts_per_page' => -1,
         'orderby'        => 'title',
         'order'          => 'ASC',
     ) );
     ?>
     <p>
-        <label for="audubon_broadcast_date"><strong>放映日時 / 公開日時</strong></label><br>
-        <input type="datetime-local" id="audubon_broadcast_date" name="audubon_broadcast_date"
-               value="<?php echo esc_attr( $broadcast_date ); ?>" style="width:100%;">
-        <span class="description">投稿の作成日時とは別に、任意の日時を表示用に入力できます（円企画スタイル）。</span>
+        <label for="audubon_broadcast_text"><strong>放映日時（フリーテキスト）</strong></label><br>
+        <input type="text" id="audubon_broadcast_text" name="audubon_broadcast_text"
+               value="<?php echo esc_attr( $broadcast_text ); ?>" style="width:100%;"
+               placeholder="例: 2025年8月13日(水)21:00〜 / 毎週土曜 / 公開中 など">
+        <span class="description">投稿の作成日時とは別に、表示用のテキストを自由に入力できます。</span>
     </p>
     <p>
-        <label for="audubon_broadcast_label"><strong>表示ラベル（任意）</strong></label><br>
-        <input type="text" id="audubon_broadcast_label" name="audubon_broadcast_label"
-               value="<?php echo esc_attr( $broadcast_label ); ?>" placeholder="例: 初回放送 / 公開日 / 上演" style="width:100%;">
+        <label for="audubon_broadcast_sort"><strong>並び替え用の日付（任意）</strong></label><br>
+        <input type="date" id="audubon_broadcast_sort" name="audubon_broadcast_sort"
+               value="<?php echo esc_attr( $broadcast_sort ); ?>" style="width:100%;">
+        <span class="description">フリーテキストとは別に、一覧での並び順を制御するための日付。空欄なら投稿日で並びます。</span>
     </p>
     <hr>
     <p>
@@ -179,7 +175,7 @@ function audubon_render_information_meta_box( $post ) {
                 </option>
             <?php endforeach; ?>
         </select>
-        <span class="description">アクターページの「最新の出演作品」リンクに使用されます。Ctrl/Cmd+クリックで複数選択。</span>
+        <span class="description">アクターページ「最新の出演」リンクの自動取得に使用されます。Ctrl/Cmd+クリックで複数選択。</span>
     </p>
     <?php
 }
@@ -190,7 +186,7 @@ function audubon_render_slide_meta_box( $post ) {
     $link    = get_post_meta( $post->ID, '_audubon_slide_link', true );
     ?>
     <p>
-        <span class="description">[audubon_slides] ショートコードで3分割A4ポスターとして表示するときに使用される情報です。既存テーマのスライド表示には影響しません。</span>
+        <span class="description">[audubon_slides] ショートコードで3分割A4ポスターとして表示する際に使用します。既存テーマのスライド表示には影響しません。</span>
     </p>
     <p>
         <label for="audubon_slide_caption"><strong>ポスター下に表示するテキスト（例: 山田太郎 出演）</strong></label><br>
@@ -201,28 +197,7 @@ function audubon_render_slide_meta_box( $post ) {
         <label for="audubon_slide_link"><strong>リンク先URL（任意）</strong></label><br>
         <input type="url" id="audubon_slide_link" name="audubon_slide_link"
                value="<?php echo esc_attr( $link ); ?>" style="width:100%;" placeholder="https://...">
-        <br><span class="description">空の場合、既存の slides CPT に設定されたリンクを優先します（テーマ依存）。</span>
-    </p>
-    <?php
-}
-
-function audubon_render_work_meta_box( $post ) {
-    wp_nonce_field( 'audubon_work_meta', 'audubon_work_meta_nonce' );
-    $year = get_post_meta( $post->ID, '_audubon_work_year', true );
-    $link = get_post_meta( $post->ID, '_audubon_work_link', true );
-    ?>
-    <p>
-        <span class="description">アイキャッチ画像にA4比率（210:297）のポスター画像を設定してください。</span>
-    </p>
-    <p>
-        <label for="audubon_work_year"><strong>公開年</strong></label><br>
-        <input type="text" id="audubon_work_year" name="audubon_work_year"
-               value="<?php echo esc_attr( $year ); ?>" style="width:120px;" placeholder="2025">
-    </p>
-    <p>
-        <label for="audubon_work_link"><strong>外部リンク（任意）</strong></label><br>
-        <input type="url" id="audubon_work_link" name="audubon_work_link"
-               value="<?php echo esc_attr( $link ); ?>" style="width:100%;" placeholder="https://...">
+        <br><span class="description">空の場合、既存スライドのリンク（テーマ依存）が優先されます。</span>
     </p>
     <?php
 }
@@ -236,8 +211,8 @@ function audubon_save_meta_boxes( $post_id, $post ) {
         return;
     }
 
-    // Actor
-    if ( $post->post_type === 'audubon_actor'
+    // Actor (既存CPT)
+    if ( $post->post_type === 'actor'
         && isset( $_POST['audubon_actor_meta_nonce'] )
         && wp_verify_nonce( $_POST['audubon_actor_meta_nonce'], 'audubon_actor_meta' ) ) {
 
@@ -251,16 +226,16 @@ function audubon_save_meta_boxes( $post_id, $post ) {
         update_post_meta( $post_id, '_audubon_auto_latest_information', $auto );
     }
 
-    // Information
-    if ( $post->post_type === 'audubon_information'
-        && isset( $_POST['audubon_information_meta_nonce'] )
-        && wp_verify_nonce( $_POST['audubon_information_meta_nonce'], 'audubon_information_meta' ) ) {
+    // News (既存CPT news_list)
+    if ( $post->post_type === 'news_list'
+        && isset( $_POST['audubon_news_meta_nonce'] )
+        && wp_verify_nonce( $_POST['audubon_news_meta_nonce'], 'audubon_news_meta' ) ) {
 
-        $broadcast_date = isset( $_POST['audubon_broadcast_date'] ) ? sanitize_text_field( wp_unslash( $_POST['audubon_broadcast_date'] ) ) : '';
-        update_post_meta( $post_id, '_audubon_broadcast_date', $broadcast_date );
+        $text = isset( $_POST['audubon_broadcast_text'] ) ? sanitize_text_field( wp_unslash( $_POST['audubon_broadcast_text'] ) ) : '';
+        update_post_meta( $post_id, '_audubon_broadcast_text', $text );
 
-        $broadcast_label = isset( $_POST['audubon_broadcast_label'] ) ? sanitize_text_field( wp_unslash( $_POST['audubon_broadcast_label'] ) ) : '';
-        update_post_meta( $post_id, '_audubon_broadcast_label', $broadcast_label );
+        $sort = isset( $_POST['audubon_broadcast_sort'] ) ? sanitize_text_field( wp_unslash( $_POST['audubon_broadcast_sort'] ) ) : '';
+        update_post_meta( $post_id, '_audubon_broadcast_sort', $sort );
 
         $actors = isset( $_POST['audubon_related_actors'] ) && is_array( $_POST['audubon_related_actors'] )
             ? array_map( 'absint', $_POST['audubon_related_actors'] )
@@ -268,7 +243,7 @@ function audubon_save_meta_boxes( $post_id, $post ) {
         update_post_meta( $post_id, '_audubon_related_actors', $actors );
     }
 
-    // Slide (既存slides CPTへの追加メタ)
+    // Slides (既存CPT)
     if ( $post->post_type === 'slides'
         && isset( $_POST['audubon_slide_meta_nonce'] )
         && wp_verify_nonce( $_POST['audubon_slide_meta_nonce'], 'audubon_slide_meta' ) ) {
@@ -279,28 +254,16 @@ function audubon_save_meta_boxes( $post_id, $post ) {
         $link = isset( $_POST['audubon_slide_link'] ) ? esc_url_raw( wp_unslash( $_POST['audubon_slide_link'] ) ) : '';
         update_post_meta( $post_id, '_audubon_slide_link', $link );
     }
-
-    // Work
-    if ( $post->post_type === 'audubon_work'
-        && isset( $_POST['audubon_work_meta_nonce'] )
-        && wp_verify_nonce( $_POST['audubon_work_meta_nonce'], 'audubon_work_meta' ) ) {
-
-        $year = isset( $_POST['audubon_work_year'] ) ? sanitize_text_field( wp_unslash( $_POST['audubon_work_year'] ) ) : '';
-        update_post_meta( $post_id, '_audubon_work_year', $year );
-
-        $link = isset( $_POST['audubon_work_link'] ) ? esc_url_raw( wp_unslash( $_POST['audubon_work_link'] ) ) : '';
-        update_post_meta( $post_id, '_audubon_work_link', $link );
-    }
 }
 
 /**
- * メディアアップローダーを管理画面で読み込む。
+ * メディアアップローダーをアクター編集画面で読み込む。
  */
 add_action( 'admin_enqueue_scripts', 'audubon_admin_enqueue' );
 function audubon_admin_enqueue( $hook ) {
     global $post;
     if ( ( $hook === 'post.php' || $hook === 'post-new.php' )
-        && $post && $post->post_type === 'audubon_actor' ) {
+        && $post && $post->post_type === 'actor' ) {
         wp_enqueue_media();
     }
 }

@@ -1,29 +1,31 @@
 <?php
 /**
- * Information一覧ページのフォールバックテンプレート。
- * 投稿日ではなく「放映日時」を表示する点が円企画スタイルです。
+ * archive-news_list.php
+ * 既存CPT `news_list` のアーカイブ（ニュース一覧）のフォールバックテンプレート。
+ *
+ * 投稿の作成日ではなく、編集画面で入力したフリーテキストの「放映日時」を表示します。
+ * 後で新テーマを作る際は、このファイルをそのまま新テーマの直下にコピーしてください。
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 get_header();
 ?>
-<main class="audubon-archive-information" style="max-width:920px;margin:0 auto;padding:24px;">
+<main class="audubon-archive-news" style="max-width:920px;margin:0 auto;padding:24px;">
     <header>
-        <h1>Information</h1>
+        <h1>News</h1>
     </header>
 
     <?php if ( have_posts() ) : ?>
-        <ul class="audubon-information-list" style="list-style:none;padding:0;margin:0;">
+        <ul class="audubon-news-list" style="list-style:none;padding:0;margin:0;">
             <?php while ( have_posts() ) : the_post(); ?>
                 <li style="border-bottom:1px solid #eee;padding:16px 0;">
                     <div style="display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;">
-                        <time style="color:#666;font-variant-numeric:tabular-nums;">
-                            <?php
-                            $label = audubon_get_information_label( get_the_ID() );
-                            if ( $label ) {
-                                echo esc_html( $label ) . '：';
-                            }
-                            echo esc_html( audubon_get_information_display_date() );
-                            ?>
-                        </time>
+                        <span class="audubon-news-list__date" style="color:#666;">
+                            <?php echo esc_html( audubon_get_news_display_date() ); ?>
+                        </span>
                         <a href="<?php the_permalink(); ?>" style="font-weight:600;color:inherit;text-decoration:none;">
                             <?php the_title(); ?>
                         </a>

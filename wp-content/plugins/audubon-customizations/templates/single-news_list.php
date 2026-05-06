@@ -1,10 +1,10 @@
 <?php
 /**
- * single-actor.php
- * 既存CPT `actor` の単体ページのフォールバックテンプレート。
+ * single-news_list.php
+ * 既存CPT `news_list` の単体ページのフォールバックテンプレート。
  *
+ * 投稿の作成日ではなく、編集画面で入力したフリーテキストの「放映日時」を表示します。
  * 後で新テーマを作る際は、このファイルをそのまま新テーマの直下にコピーしてください。
- * テーマ側に同名ファイルがあればそちらが優先されます。
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -13,23 +13,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 get_header();
 ?>
-<main class="audubon-single-actor" style="max-width:920px;margin:0 auto;padding:24px;">
+<main class="audubon-single-news" style="max-width:920px;margin:0 auto;padding:24px;">
     <?php while ( have_posts() ) : the_post(); ?>
         <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
             <header>
+                <p class="audubon-news-meta" style="color:#666;margin:0 0 8px;">
+                    <?php echo esc_html( audubon_get_news_display_date() ); ?>
+                </p>
                 <h1 class="entry-title"><?php the_title(); ?></h1>
             </header>
             <?php if ( has_post_thumbnail() ) : ?>
-                <div class="audubon-actor-thumbnail" style="margin:16px 0;">
+                <div class="audubon-news-thumbnail" style="margin:16px 0;">
                     <?php the_post_thumbnail( 'large' ); ?>
                 </div>
             <?php endif; ?>
-
-            <?php
-            // 「最新の出演」リンク + 「プロフィールPDFダウンロード」ボタン
-            echo do_shortcode( '[audubon_actor_links]' );
-            ?>
-
             <div class="entry-content">
                 <?php the_content(); ?>
             </div>

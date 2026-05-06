@@ -1,37 +1,37 @@
 <?php
 /**
  * 管理画面まわりのカスタマイズ。
- * - Information / Works / Bannerの一覧に必要な列を追加
+ * 既存CPT (`actor` / `news_list` / `slides`) の一覧に列を追加します。
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// Information一覧に「放映日時」列
-add_filter( 'manage_audubon_information_posts_columns', function ( $columns ) {
+// news_list 一覧に「放映日時（フリーテキスト）」列
+add_filter( 'manage_news_list_posts_columns', function ( $columns ) {
     $new = array();
     foreach ( $columns as $key => $label ) {
         $new[ $key ] = $label;
         if ( $key === 'title' ) {
-            $new['broadcast_date']  = '放映日時';
-            $new['broadcast_label'] = 'ラベル';
+            $new['audubon_broadcast_text'] = '放映日時';
+            $new['audubon_broadcast_sort'] = '並び替え用日付';
         }
     }
     return $new;
 } );
 
-add_action( 'manage_audubon_information_posts_custom_column', function ( $column, $post_id ) {
-    if ( $column === 'broadcast_date' ) {
-        echo esc_html( audubon_get_information_display_date( $post_id ) );
+add_action( 'manage_news_list_posts_custom_column', function ( $column, $post_id ) {
+    if ( $column === 'audubon_broadcast_text' ) {
+        echo esc_html( get_post_meta( $post_id, '_audubon_broadcast_text', true ) );
     }
-    if ( $column === 'broadcast_label' ) {
-        echo esc_html( audubon_get_information_label( $post_id ) );
+    if ( $column === 'audubon_broadcast_sort' ) {
+        echo esc_html( get_post_meta( $post_id, '_audubon_broadcast_sort', true ) );
     }
 }, 10, 2 );
 
-add_filter( 'manage_edit-audubon_information_sortable_columns', function ( $columns ) {
-    $columns['broadcast_date'] = 'broadcast_date';
+add_filter( 'manage_edit-news_list_sortable_columns', function ( $columns ) {
+    $columns['audubon_broadcast_sort'] = 'audubon_broadcast_sort';
     return $columns;
 } );
 
@@ -39,13 +39,13 @@ add_action( 'pre_get_posts', function ( $query ) {
     if ( ! is_admin() || ! $query->is_main_query() ) {
         return;
     }
-    if ( $query->get( 'orderby' ) === 'broadcast_date' ) {
-        $query->set( 'meta_key', '_audubon_broadcast_date' );
+    if ( $query->get( 'orderby' ) === 'audubon_broadcast_sort' ) {
+        $query->set( 'meta_key', '_audubon_broadcast_sort' );
         $query->set( 'orderby', 'meta_value' );
     }
 } );
 
-// 既存 slides 一覧に「出演テキスト」列を追加
+// slides 一覧に「出演テキスト」列
 add_filter( 'manage_slides_posts_columns', function ( $columns ) {
     $new = array();
     foreach ( $columns as $key => $label ) {
@@ -63,47 +63,25 @@ add_action( 'manage_slides_posts_custom_column', function ( $column, $post_id ) 
     }
 }, 10, 2 );
 
-// Works一覧にポスター・公開年
-add_filter( 'manage_audubon_work_posts_columns', function ( $columns ) {
+// actor 一覧に「PDF / 最新の出演」列
+add_filter( 'manage_actor_posts_columns', function ( $columns ) {
     $new = array();
     foreach ( $columns as $key => $label ) {
         $new[ $key ] = $label;
         if ( $key === 'title' ) {
-            $new['work_thumb'] = 'ポスター';
-            $new['work_year']  = '公開年';
+            $new['audubon_actor_pdf']  = 'プロフィールPDF';
+            $new['audubon_actor_news'] = '最新の出演';
         }
     }
     return $new;
 } );
 
-add_action( 'manage_audubon_work_posts_custom_column', function ( $column, $post_id ) {
-    if ( $column === 'work_thumb' ) {
-        echo get_the_post_thumbnail( $post_id, array( 60, 85 ) );
-    }
-    if ( $column === 'work_year' ) {
-        echo esc_html( get_post_meta( $post_id, '_audubon_work_year', true ) );
-    }
-}, 10, 2 );
-
-// Actor一覧にPDF・最新出演
-add_filter( 'manage_audubon_actor_posts_columns', function ( $columns ) {
-    $new = array();
-    foreach ( $columns as $key => $label ) {
-        $new[ $key ] = $label;
-        if ( $key === 'title' ) {
-            $new['actor_pdf']  = 'プロフィールPDF';
-            $new['actor_info'] = '最新の出演';
-        }
-    }
-    return $new;
-} );
-
-add_action( 'manage_audubon_actor_posts_custom_column', function ( $column, $post_id ) {
-    if ( $column === 'actor_pdf' ) {
+add_action( 'manage_actor_posts_custom_column', function ( $column, $post_id ) {
+    if ( $column === 'audubon_actor_pdf' ) {
         $url = audubon_get_actor_profile_pdf_url( $post_id );
         echo $url ? '<a href="' . esc_url( $url ) . '" target="_blank">PDF</a>' : '—';
     }
-    if ( $column === 'actor_info' ) {
+    if ( $column === 'audubon_actor_news' ) {
         $info = audubon_get_actor_latest_information( $post_id );
         if ( $info ) {
             printf(

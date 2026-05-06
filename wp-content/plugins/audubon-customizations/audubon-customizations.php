@@ -65,11 +65,26 @@ function audubon_deactivate() {
     flush_rewrite_rules();
 }
 
+/**
+ * テンプレートの上書き。
+ *
+ * すべて本プラグイン同梱の `templates/` 配下に**別ファイルとして保管**しているので、
+ * 後で新テーマを作成する際はこのフォルダの中身をそのまま新テーマにコピーすれば移行できます。
+ *
+ * 既存テーマに同名のテンプレート（例: single-actor.php）がある場合はそちらが優先されます。
+ */
 add_filter( 'single_template', 'audubon_single_template' );
 function audubon_single_template( $single ) {
     global $post;
-    if ( $post->post_type === 'audubon_actor' ) {
-        $template = AUDUBON_PLUGIN_DIR . 'templates/single-actor.php';
+    if ( ! $post ) {
+        return $single;
+    }
+    $map = array(
+        'actor'     => 'single-actor.php',
+        'news_list' => 'single-news_list.php',
+    );
+    if ( isset( $map[ $post->post_type ] ) ) {
+        $template = AUDUBON_PLUGIN_DIR . 'templates/' . $map[ $post->post_type ];
         if ( file_exists( $template ) ) {
             return $template;
         }
@@ -79,10 +94,15 @@ function audubon_single_template( $single ) {
 
 add_filter( 'archive_template', 'audubon_archive_template' );
 function audubon_archive_template( $archive ) {
-    if ( is_post_type_archive( 'audubon_information' ) ) {
-        $template = AUDUBON_PLUGIN_DIR . 'templates/archive-information.php';
-        if ( file_exists( $template ) ) {
-            return $template;
+    $map = array(
+        'news_list' => 'archive-news_list.php',
+    );
+    foreach ( $map as $post_type => $file ) {
+        if ( is_post_type_archive( $post_type ) ) {
+            $template = AUDUBON_PLUGIN_DIR . 'templates/' . $file;
+            if ( file_exists( $template ) ) {
+                return $template;
+            }
         }
     }
     return $archive;

@@ -1,6 +1,11 @@
 <?php
 /**
  * テンプレートタグ（テーマからも呼び出せるヘルパー関数）。
+ *
+ * 対象CPT:
+ *   - actor       : アクター
+ *   - news_list   : ニュース
+ *   - slides      : 既存スライド
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -20,9 +25,9 @@ function audubon_get_actor_profile_pdf_url( $actor_id = null ) {
 }
 
 /**
- * アクターの最新の出演作品（Information投稿）。
+ * アクターの最新の出演（news_list投稿）。
  * 1) 手動指定された投稿が最優先
- * 2) 自動取得がONなら、_audubon_related_actors にこのアクターIDを含むInformationの最新（放映日時優先）
+ * 2) 自動取得がONなら、_audubon_related_actors にこのアクターIDを含むnews_listの最新（並び替え用日付→投稿日）
  */
 function audubon_get_actor_latest_information( $actor_id = null ) {
     $actor_id = $actor_id ?: get_the_ID();
@@ -41,7 +46,7 @@ function audubon_get_actor_latest_information( $actor_id = null ) {
     }
 
     $query = new WP_Query( array(
-        'post_type'      => 'audubon_information',
+        'post_type'      => 'news_list',
         'posts_per_page' => 1,
         'post_status'    => 'publish',
         'meta_query'     => array(
@@ -51,7 +56,7 @@ function audubon_get_actor_latest_information( $actor_id = null ) {
                 'compare' => 'LIKE',
             ),
         ),
-        'meta_key'       => '_audubon_broadcast_date',
+        'meta_key'       => '_audubon_broadcast_sort',
         'orderby'        => array(
             'meta_value' => 'DESC',
             'date'       => 'DESC',
@@ -65,31 +70,27 @@ function audubon_get_actor_latest_information( $actor_id = null ) {
 }
 
 /**
- * Information投稿の表示日付。放映日時が入っていればそれ、無ければ投稿日。
+ * ニュース投稿の表示用「放映日時」テキスト。フリーテキスト優先、なければ投稿日。
  */
-function audubon_get_information_display_date( $post_id = null, $format = '' ) {
+function audubon_get_news_display_date( $post_id = null, $format = '' ) {
     $post_id = $post_id ?: get_the_ID();
-    $format  = $format ?: get_option( 'date_format' );
-    $broadcast = get_post_meta( $post_id, '_audubon_broadcast_date', true );
-    if ( $broadcast ) {
-        $ts = strtotime( $broadcast );
-        if ( $ts ) {
-            return date_i18n( $format, $ts );
-        }
+    $text    = get_post_meta( $post_id, '_audubon_broadcast_text', true );
+    if ( $text !== '' ) {
+        return $text;
     }
+    $format = $format ?: get_option( 'date_format' );
     return get_the_date( $format, $post_id );
 }
 
 /**
- * Information投稿の表示ラベル（例: 初回放送 / 公開日）。
+ * 後方互換: 旧API名。
  */
-function audubon_get_information_label( $post_id = null ) {
-    $post_id = $post_id ?: get_the_ID();
-    return get_post_meta( $post_id, '_audubon_broadcast_label', true );
+function audubon_get_information_display_date( $post_id = null, $format = '' ) {
+    return audubon_get_news_display_date( $post_id, $format );
 }
 
 /**
- * 既存 `slides` CPTのスライド一覧（menu_order昇順、なければ作成日降順）。
+ * 既存 `slides` CPTの一覧（menu_order昇順、なければ作成日降順）。
  */
 function audubon_get_slides( $limit = -1 ) {
     if ( ! post_type_exists( 'slides' ) ) {
@@ -97,18 +98,6 @@ function audubon_get_slides( $limit = -1 ) {
     }
     return get_posts( array(
         'post_type'      => 'slides',
-        'posts_per_page' => $limit,
-        'orderby'        => array( 'menu_order' => 'ASC', 'date' => 'DESC' ),
-        'post_status'    => 'publish',
-    ) );
-}
-
-/**
- * Works一覧（menu_order昇順、なければ公開年降順）。
- */
-function audubon_get_works( $limit = -1 ) {
-    return get_posts( array(
-        'post_type'      => 'audubon_work',
         'posts_per_page' => $limit,
         'orderby'        => array( 'menu_order' => 'ASC', 'date' => 'DESC' ),
         'post_status'    => 'publish',
