@@ -295,21 +295,27 @@ function audubon_get_actor_latest_information( $actor_id = null ) {
         return null;
     }
 
+    // 関連アクターメタを持つnews_listを対象。broadcast_sortがあるものは優先、無ければ投稿日順。
     $query = new WP_Query( array(
         'post_type'      => 'news_list',
         'posts_per_page' => 1,
         'post_status'    => 'publish',
         'meta_query'     => array(
+            'relation' => 'AND',
             array(
                 'key'     => '_audubon_related_actors',
                 'value'   => sprintf( ':"%d";', $actor_id ),
                 'compare' => 'LIKE',
             ),
+            array(
+                'relation'     => 'OR',
+                'with_sort'    => array( 'key' => '_audubon_broadcast_sort', 'compare' => 'EXISTS' ),
+                'without_sort' => array( 'key' => '_audubon_broadcast_sort', 'compare' => 'NOT EXISTS' ),
+            ),
         ),
-        'meta_key'       => '_audubon_broadcast_sort',
         'orderby'        => array(
-            'meta_value' => 'DESC',
-            'date'       => 'DESC',
+            'with_sort' => 'DESC',
+            'date'      => 'DESC',
         ),
     ) );
     return $query->have_posts() ? $query->posts[0] : null;

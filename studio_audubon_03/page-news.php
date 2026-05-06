@@ -25,10 +25,16 @@ $args = array(
     'paged' => $paged,
     'post_type' => 'news_list',
     'posts_per_page' => 10, // 表示件数の指定
-    'meta_key'  => '_audubon_broadcast_sort',
-    'orderby'   => array(
-        'meta_value' => 'DESC',
-        'date'       => 'DESC',
+    // 並び替え用日付（_audubon_broadcast_sort）が設定されていればそれを優先、無ければ投稿日。
+    // OR + EXISTS / NOT EXISTS にしないと「メタが無い既存投稿」が除外されてしまうので注意。
+    'meta_query' => array(
+        'relation'     => 'OR',
+        'with_sort'    => array( 'key' => '_audubon_broadcast_sort', 'compare' => 'EXISTS' ),
+        'without_sort' => array( 'key' => '_audubon_broadcast_sort', 'compare' => 'NOT EXISTS' ),
+    ),
+    'orderby' => array(
+        'with_sort' => 'DESC',
+        'date'      => 'DESC',
     ),
 );
 $the_query = new WP_Query($args);
