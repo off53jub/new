@@ -1,20 +1,28 @@
 # Studio Audubon WordPress カスタマイズ
 
-studio-audubon.jp の既存テーマ `studio_audubon_02` に対する機能拡張を組み込んだバージョンです。
+studio-audubon.jp の既存テーマ `studio_audubon_03` に対する機能拡張を組み込んだバージョンです。
 
 ## ダウンロード
 
-- **[studio_audubon_02.zip](./studio_audubon_02.zip)** ← 修正版テーマ一式（約3MB）
-- もしくは [studio_audubon_02/](./studio_audubon_02/) フォルダの中身を直接
+- **[studio_audubon_03.zip](./studio_audubon_03.zip)** ← 修正版テーマ一式（約3MB）
+- もしくは [studio_audubon_03/](./studio_audubon_03/) フォルダの中身を直接
 
 ## 適用方法
 
-1. **念のため現行テーマをバックアップ**（FTPで `wp-content/themes/studio_audubon_02/` をローカルに保存）
-2. 上記ZIPをダウンロード&解凍
-3. 解凍したフォルダの中身を、サーバの `wp-content/themes/studio_audubon_02/` に**上書きアップロード**
-4. 管理画面 > 設定 > パーマリンク設定 で「変更を保存」
+このテーマは **新しいフォルダ名 (`studio_audubon_03`)** として作られているので、
+既存の `studio_audubon_02` を上書き・削除しません。**並立してインストール**し、
+管理画面から切り替えるだけで適用・ロールバックができます。
 
-これでサイト体裁はそのままに、以下の機能が追加・変更されます。
+1. ZIPをダウンロード&解凍
+2. 解凍した `studio_audubon_03` フォルダを **そのまま** サーバの `wp-content/themes/` にアップロード
+   （結果として `wp-content/themes/studio_audubon_02/` と `wp-content/themes/studio_audubon_03/` が両方存在する状態になります）
+3. 管理画面 > **外観 > テーマ** を開くと「studio_audubon 03」が表示されるので、**ライブプレビュー**で見た目を確認 → 問題なければ **有効化**
+4. 設定 > パーマリンク設定 で「変更を保存」
+
+**ロールバック**: 管理画面 > 外観 > テーマ で `studio_audubon_02` を有効化すれば即座に元に戻ります。
+既存テーマは触っていないため、いつでも切り戻せます。
+
+サイト体裁はそのまま（既存の `style.css` 1848行を踏襲）に、以下の機能が追加・変更されます。
 
 ## 変更点
 
@@ -44,7 +52,7 @@ studio-audubon.jp の既存テーマ `studio_audubon_02` に対する機能拡�
 ## 追加されたファイル
 
 ```
-studio_audubon_02/
+studio_audubon_03/
 ├── audubon-customizations.php    ← 全機能のメインファイル（新規）
 └── assets/
     ├── css/audubon-features.css  ← 機能拡張用CSS（新規）
@@ -78,7 +86,8 @@ studio_audubon_02/
 
 ## ロールバック
 
-`functions.php` の最終行（`require_once` の行）を削除すれば、機能拡張だけ無効化できます。
-完全に元に戻すにはバックアップしておいた元のテーマファイルで上書きしてください。
+- **テーマ単位で戻す**: 管理画面 > 外観 > テーマ で `studio_audubon_02` を有効化
+- **新テーマを残しつつ機能拡張だけ無効化**: `studio_audubon_03/functions.php` の最終行
+  （`require_once ... audubon-customizations.php` の行）を削除
 
-入力したデータ（PDF、放映日時、キャプション等）はDBに残るため、再度 `require_once` を有効化すれば復元されます。
+入力したデータ（PDF、放映日時、キャプション等）はDBに残るため、再有効化すればそのまま復元されます。
