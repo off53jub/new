@@ -24,9 +24,8 @@ function mythumb($size)
 function my_theme_setup()
 {
     add_theme_support('post-thumbnails');
-    add_image_size('small_thumbnail', 300, 424, true); // A4比率（210:297）
-    add_image_size('actor_thumbnail', 230, 325, true); // A4比率（210:297）
-    add_image_size('audubon_a4_large', 600, 849, true); // A4比率（大）
+    add_image_size('small_thumbnail', 300, 200, true); // クロップモード
+    add_image_size('actor_thumbnail', 230, 280, true); // クロップモード
     add_action('after_setup_theme', 'my_theme_setup');
     
 }

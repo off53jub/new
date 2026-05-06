@@ -5,7 +5,17 @@ Template Post Type: actor
 ?>
 <?php get_header();?>
 <style type="text/css">
-  /* big-img / thumb img の比率は audubon-features.css で A4（210:297）に統一管理 */
+  .carousel-item img.big-img{
+    height: 450px;
+    object-fit: cover;
+    object-position: center;
+  }
+  .thumb img{
+    width: 67px;
+    height: 67px;
+    object-fit: cover;
+    object-position: center;
+  }
   .player-name .sub {
     font-size: 14px;
     display: block;
