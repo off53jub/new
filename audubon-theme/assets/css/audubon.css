@@ -1,0 +1,177 @@
+/* =========================================================
+ * Studio Audubon Customizations - スタイルシート
+ * ========================================================= */
+
+/* ---- A4ポスター3分割スライダー ---- */
+.audubon-banner {
+    position: relative;
+    width: 100%;
+    margin: 0 auto 2rem;
+    padding: 0 40px;
+    box-sizing: border-box;
+}
+.audubon-banner__viewport {
+    overflow: hidden;
+    width: 100%;
+}
+.audubon-banner__track {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    transition: transform 0.6s cubic-bezier(.23,1,.32,1);
+    will-change: transform;
+}
+.audubon-banner__item {
+    flex: 0 0 calc(100% / 3);
+    box-sizing: border-box;
+    padding: 0 12px;
+    text-align: center;
+}
+@media (max-width: 900px) {
+    .audubon-banner__item { flex: 0 0 50%; }
+}
+@media (max-width: 600px) {
+    .audubon-banner__item { flex: 0 0 100%; }
+}
+.audubon-banner__poster {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 210 / 297;
+    overflow: hidden;
+    background: #f4f4f4;
+}
+.audubon-banner__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.audubon-banner__caption {
+    margin: 0.75rem 0 0;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: #222;
+}
+.audubon-banner__link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+.audubon-banner__link:hover { opacity: 0.85; }
+.audubon-banner__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    border: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 1;
+    z-index: 2;
+}
+.audubon-banner__nav:hover { background: rgba(0,0,0,0.8); }
+.audubon-banner__nav--prev { left: 0; }
+.audubon-banner__nav--next { right: 0; }
+
+/* ---- Works (A4ポスター静的グリッド) ---- */
+.audubon-works {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 24px;
+}
+.audubon-works--cols-2 { grid-template-columns: repeat(2, 1fr); }
+.audubon-works--cols-3 { grid-template-columns: repeat(3, 1fr); }
+.audubon-works--cols-4 { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 900px) {
+    .audubon-works--cols-3,
+    .audubon-works--cols-4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+    .audubon-works { grid-template-columns: 1fr !important; }
+}
+.audubon-works__item { text-align: center; }
+.audubon-works__link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+.audubon-works__link:hover { opacity: 0.85; }
+.audubon-works__poster {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 210 / 297;
+    overflow: hidden;
+    background: #f4f4f4;
+}
+.audubon-works__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.audubon-works__title {
+    margin: 0.75rem 0 0;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+/* ---- アクターページ「最新の出演 / PDFダウンロード」 ---- */
+.audubon-actor-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 24px 0;
+}
+.audubon-actor-links__information,
+.audubon-actor-links__pdf {
+    flex: 1 1 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 18px;
+    border: 1px solid #d8d8d8;
+    border-radius: 6px;
+    color: inherit;
+    text-decoration: none;
+    background: #fff;
+    transition: background 0.2s, border-color 0.2s;
+}
+.audubon-actor-links__information:hover,
+.audubon-actor-links__pdf:hover {
+    background: #f7f5ee;
+    border-color: #b9a76a;
+}
+.audubon-actor-links__label {
+    font-size: 0.78rem;
+    color: #b9a76a;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.audubon-actor-links__title {
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.4;
+}
+.audubon-actor-links__date {
+    font-size: 0.85rem;
+    color: #666;
+}
+.audubon-actor-links__pdf {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 600;
+}
+.audubon-actor-links__icon {
+    font-size: 1.2em;
+}

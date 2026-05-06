@@ -1,10 +1,8 @@
 <?php
 /**
  * single-news_list.php
- * 既存CPT `news_list` の単体ページのフォールバックテンプレート。
- *
- * 投稿の作成日ではなく、編集画面で入力したフリーテキストの「放映日時」を表示します。
- * 後で新テーマを作る際は、このファイルをそのまま新テーマの直下にコピーしてください。
+ * ニュース（CPT: news_list）の単体ページ。
+ * 投稿の作成日ではなく、編集画面で入力した「放映日時」を表示します。
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -18,7 +16,13 @@ get_header();
         <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
             <header>
                 <p class="audubon-news-meta" style="color:#666;margin:0 0 8px;">
-                    <?php echo esc_html( audubon_get_news_display_date() ); ?>
+                    <?php
+                    if ( function_exists( 'audubon_get_news_display_date' ) ) {
+                        echo esc_html( audubon_get_news_display_date() );
+                    } else {
+                        the_date();
+                    }
+                    ?>
                 </p>
                 <h1 class="entry-title"><?php the_title(); ?></h1>
             </header>

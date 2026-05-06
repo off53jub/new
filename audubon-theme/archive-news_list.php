@@ -1,10 +1,8 @@
 <?php
 /**
  * archive-news_list.php
- * 既存CPT `news_list` のアーカイブ（ニュース一覧）のフォールバックテンプレート。
- *
- * 投稿の作成日ではなく、編集画面で入力したフリーテキストの「放映日時」を表示します。
- * 後で新テーマを作る際は、このファイルをそのまま新テーマの直下にコピーしてください。
+ * ニュース（CPT: news_list）の一覧ページ。
+ * 投稿の作成日ではなく、フリーテキストの「放映日時」を表示します。
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -24,7 +22,13 @@ get_header();
                 <li style="border-bottom:1px solid #eee;padding:16px 0;">
                     <div style="display:flex;gap:16px;align-items:baseline;flex-wrap:wrap;">
                         <span class="audubon-news-list__date" style="color:#666;">
-                            <?php echo esc_html( audubon_get_news_display_date() ); ?>
+                            <?php
+                            if ( function_exists( 'audubon_get_news_display_date' ) ) {
+                                echo esc_html( audubon_get_news_display_date() );
+                            } else {
+                                the_date();
+                            }
+                            ?>
                         </span>
                         <a href="<?php the_permalink(); ?>" style="font-weight:600;color:inherit;text-decoration:none;">
                             <?php the_title(); ?>

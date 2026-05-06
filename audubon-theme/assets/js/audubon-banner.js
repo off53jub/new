@@ -1,8 +1,8 @@
 /**
- * Audubon バナースライダー
- * - 一定間隔で1枚ずつ自動スライド（無限ループ風に末尾→先頭にジャンプ）
- * - prefers-reduced-motion時は自動スライドを停止
- * - prev/nextボタンでも操作可能
+ * Studio Audubon バナースライダー
+ * - 一定間隔で1枚ずつ自動スライド（ループ風）
+ * - prefers-reduced-motion時は自動スライド停止
+ * - prev/nextボタンでも操作可
  */
 (function () {
     'use strict';
@@ -19,7 +19,6 @@
         var timer = null;
         var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        // ループ用に先頭の visible 個を末尾に複製
         if (items.length > visible) {
             for (var i = 0; i < visible; i++) {
                 var clone = items[i].cloneNode(true);
@@ -32,24 +31,20 @@
             var first = track.children[0];
             return first ? first.getBoundingClientRect().width : 0;
         }
-
         function update(animate) {
             track.style.transition = animate ? '' : 'none';
             track.style.transform = 'translateX(' + (-index * getStep()) + 'px)';
         }
-
         function next() {
             index++;
             update(true);
             if (index >= items.length) {
-                // アニメ後に瞬時に先頭へ戻す
                 window.setTimeout(function () {
                     index = 0;
                     update(false);
                 }, 600);
             }
         }
-
         function prev() {
             if (index <= 0) {
                 index = items.length;
@@ -63,7 +58,6 @@
             index--;
             update(true);
         }
-
         function start() {
             if (reduced || items.length <= visible) return;
             stop();
@@ -83,7 +77,6 @@
 
         banner.addEventListener('mouseenter', stop);
         banner.addEventListener('mouseleave', start);
-
         window.addEventListener('resize', function () { update(false); });
 
         update(false);
