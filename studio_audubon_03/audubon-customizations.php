@@ -62,8 +62,8 @@ function audubon_register_meta_boxes() {
     add_meta_box( 'audubon_actor_meta', 'アクター追加情報（プロフィールPDF / 最新の出演）',
         'audubon_render_actor_meta_box', 'actor', 'normal', 'high' );
 
-    add_meta_box( 'audubon_news_meta', '放映日時・出演アクター',
-        'audubon_render_news_meta_box', 'news_list', 'side', 'high' );
+    add_meta_box( 'audubon_news_meta', '表示日時（フリーテキスト）・出演アクター',
+        'audubon_render_news_meta_box', 'news_list', 'normal', 'high' );
 
     add_meta_box( 'audubon_slide_meta', 'スライド設定（出演テキスト・リンク）',
         'audubon_render_slide_meta_box', 'slides', 'normal', 'high' );
@@ -174,18 +174,25 @@ function audubon_render_news_meta_box( $post ) {
         'order'          => 'ASC',
     ) );
     ?>
-    <p>
-        <label for="audubon_broadcast_text"><strong>放映日時（フリーテキスト）</strong></label><br>
+    <p style="margin:0 0 6px;">
+        <label for="audubon_broadcast_text" style="font-size:14px;">
+            <strong>表示日時（フリーテキスト）</strong>
+        </label>
+    </p>
+    <p style="margin:0 0 6px;">
         <input type="text" id="audubon_broadcast_text" name="audubon_broadcast_text"
-               value="<?php echo esc_attr( $broadcast_text ); ?>" style="width:100%;"
+               value="<?php echo esc_attr( $broadcast_text ); ?>"
+               style="width:100%;font-size:18px;padding:8px 10px;line-height:1.4;"
                placeholder="例: 2025年8月13日(水)21:00〜 / 毎週土曜 / 公開中 など">
-        <span class="description">投稿の作成日時とは別に、表示用のテキストを自由に入力できます。</span>
+    </p>
+    <p style="margin:0 0 14px;color:#666;">
+        この投稿の一覧・詳細で表示される日時テキストです。<strong>ここに入力した内容がそのまま表示されます</strong>（投稿の作成日時は使われません）。空欄の場合は日時表示なし。
     </p>
     <p>
         <label for="audubon_broadcast_sort"><strong>並び替え用の日付（任意）</strong></label><br>
         <input type="date" id="audubon_broadcast_sort" name="audubon_broadcast_sort"
-               value="<?php echo esc_attr( $broadcast_sort ); ?>" style="width:100%;">
-        <span class="description">フリーテキストとは別に、一覧での並び順制御に使う日付。空欄なら投稿日で並びます。</span>
+               value="<?php echo esc_attr( $broadcast_sort ); ?>" style="max-width:240px;">
+        <span class="description">一覧での並び順を制御するための日付。空欄なら投稿日順で並びます。</span>
     </p>
     <hr>
     <p>
@@ -321,14 +328,16 @@ function audubon_get_actor_latest_information( $actor_id = null ) {
     return $query->have_posts() ? $query->posts[0] : null;
 }
 
+/**
+ * ニュース投稿の表示日時。
+ * フリーテキストで入力された値のみを返し、未入力なら空文字を返します。
+ * （投稿の作成日へのフォールバックは行いません）
+ *
+ * 第2引数 $format は後方互換のために受け付けますが、フリーテキストに対しては適用されません。
+ */
 function audubon_get_news_display_date( $post_id = null, $format = '' ) {
     $post_id = $post_id ?: get_the_ID();
-    $text    = get_post_meta( $post_id, '_audubon_broadcast_text', true );
-    if ( $text !== '' ) {
-        return $text;
-    }
-    $format = $format ?: get_option( 'date_format' );
-    return get_the_date( $format, $post_id );
+    return (string) get_post_meta( $post_id, '_audubon_broadcast_text', true );
 }
 
 /**

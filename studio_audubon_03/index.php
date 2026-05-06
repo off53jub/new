@@ -43,13 +43,14 @@ foreach ($posts as $post): // ループの開始
     ?>
         <div class="news-list">
           <a href="<?php the_permalink();?>">
-            <p class="news-date">
-              <?php if ( function_exists( 'audubon_get_news_display_date' ) ) : ?>
-                <span><?php echo esc_html( audubon_get_news_display_date() ); ?></span>
-              <?php else : ?>
-                <time datetime="<?php echo get_the_date('y-m-d'); ?>"><?php echo get_the_date(); ?></time>
-              <?php endif; ?>
-            </p>
+            <?php
+            $audubon_news_date = function_exists( 'audubon_get_news_display_date' )
+                ? audubon_get_news_display_date()
+                : '';
+            if ( $audubon_news_date !== '' ) :
+            ?>
+            <p class="news-date"><span><?php echo esc_html( $audubon_news_date ); ?></span></p>
+            <?php endif; ?>
             <p class="news-title"><?php echo wp_trim_words(get_the_title(), 40, '...'); ?></p>
           </a>
         </div>
