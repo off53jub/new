@@ -90,3 +90,6 @@ function download_sort_order($query)
     }
 }
 add_action('pre_get_posts', 'download_sort_order');
+
+/* ---- Audubon機能拡張（メタボックス・スライダー・PDFダウンロード等） ---- */
+require_once get_template_directory() . '/audubon-customizations.php';

@@ -1,8 +1,9 @@
 /* =========================================================
- * Studio Audubon Customizations - スタイルシート
+ * Studio Audubon - 機能拡張用スタイル
+ * 既存テーマ studio_audubon_02 のCSSとは別ファイルで管理。
  * ========================================================= */
 
-/* ---- A4ポスター3分割スライダー ---- */
+/* ---- A4ポスター3分割スライダー（トップページ） ---- */
 .audubon-banner {
     position: relative;
     width: 100%;
@@ -41,7 +42,8 @@
     overflow: hidden;
     background: #f4f4f4;
 }
-.audubon-banner__image {
+.audubon-banner__image,
+.audubon-banner__poster img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -79,51 +81,6 @@
 .audubon-banner__nav--prev { left: 0; }
 .audubon-banner__nav--next { right: 0; }
 
-/* ---- Works (A4ポスター静的グリッド) ---- */
-.audubon-works {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 24px;
-}
-.audubon-works--cols-2 { grid-template-columns: repeat(2, 1fr); }
-.audubon-works--cols-3 { grid-template-columns: repeat(3, 1fr); }
-.audubon-works--cols-4 { grid-template-columns: repeat(4, 1fr); }
-@media (max-width: 900px) {
-    .audubon-works--cols-3,
-    .audubon-works--cols-4 { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 600px) {
-    .audubon-works { grid-template-columns: 1fr !important; }
-}
-.audubon-works__item { text-align: center; }
-.audubon-works__link {
-    display: block;
-    color: inherit;
-    text-decoration: none;
-    transition: opacity 0.2s;
-}
-.audubon-works__link:hover { opacity: 0.85; }
-.audubon-works__poster {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 210 / 297;
-    overflow: hidden;
-    background: #f4f4f4;
-}
-.audubon-works__image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-.audubon-works__title {
-    margin: 0.75rem 0 0;
-    font-size: 0.95rem;
-    line-height: 1.4;
-}
-
 /* ---- アクターページ「最新の出演 / PDFダウンロード」 ---- */
 .audubon-actor-links {
     display: flex;
@@ -149,6 +106,7 @@
 .audubon-actor-links__pdf:hover {
     background: #f7f5ee;
     border-color: #b9a76a;
+    text-decoration: none;
 }
 .audubon-actor-links__label {
     font-size: 0.78rem;
@@ -172,6 +130,23 @@
     gap: 8px;
     font-weight: 600;
 }
-.audubon-actor-links__icon {
-    font-size: 1.2em;
+.audubon-actor-links__icon { font-size: 1.2em; }
+
+/* ---- Worksサムネイルを A4 ポスター比率に ---- */
+.works-area .works-list .works-image {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 210 / 297;
+    overflow: hidden;
+    background: #f4f4f4;
+}
+.works-area .works-list .works-image a,
+.works-area .works-list .works-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.works-area .works-list .works-image img {
+    object-fit: cover;
+    object-position: center;
 }

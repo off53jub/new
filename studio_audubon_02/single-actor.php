@@ -130,6 +130,12 @@ Template Post Type: actor
               </ul>
           </div>
           <?php endwhile; endif; ?>
+
+          <?php if ( function_exists( 'audubon_render_actor_links' ) ) : ?>
+          <div class="col-xl-12 mt-3 mb-3">
+              <?php audubon_render_actor_links(); ?>
+          </div>
+          <?php endif; ?>
         </div>
           
           <div class="previous-next">

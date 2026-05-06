@@ -36,7 +36,13 @@ if ($the_query->have_posts()): while ($the_query->have_posts()): $the_query->the
         ?>
         <div class="works-list">
           <div class="works-image">
-            <a href="<?php the_permalink();?>"><img src="<?php echo mythumb('medium'); ?>" alt=""></a>
+            <a href="<?php the_permalink();?>">
+              <?php if ( has_post_thumbnail() ) : ?>
+                <?php the_post_thumbnail( 'large' ); ?>
+              <?php else : ?>
+                <img src="<?php echo get_template_directory_uri(); ?>/images/no-image.png" alt="">
+              <?php endif; ?>
+            </a>
           </div>
           <div class="works-text">
             <div class="works-text-inner">

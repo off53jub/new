@@ -1,8 +1,6 @@
 /**
- * Studio Audubon バナースライダー
- * - 一定間隔で1枚ずつ自動スライド（ループ風）
- * - prefers-reduced-motion時は自動スライド停止
- * - prev/nextボタンでも操作可
+ * Studio Audubon - 機能拡張用JS
+ * トップページの A4 3分割スライダー用。
  */
 (function () {
     'use strict';

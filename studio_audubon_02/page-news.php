@@ -18,21 +18,31 @@
 	      </div>
 	    </div>
 	    <div class="contents news-area-column">
-	      <h2 class="section-title">News</h2>
+	      <h2 class="section-title">Information</h2>
 	      <div class="news-list-inner news-page">
 	        <?php
 $args = array(
     'paged' => $paged,
     'post_type' => 'news_list',
     'posts_per_page' => 10, // 表示件数の指定
+    'meta_key'  => '_audubon_broadcast_sort',
+    'orderby'   => array(
+        'meta_value' => 'DESC',
+        'date'       => 'DESC',
+    ),
 );
 $the_query = new WP_Query($args);
 if ($the_query->have_posts()): while ($the_query->have_posts()): $the_query->the_post();
         ?>
 	        <div class="news-list">
 	          <a href="<?php the_permalink();?>">
-	            <p class="news-date"><time
-	                datetime="<?php echo get_the_date('y-m-d'); ?>"><?php echo get_the_date(); ?></time></p>
+	            <p class="news-date">
+	              <?php if ( function_exists( 'audubon_get_news_display_date' ) ) : ?>
+	                <span><?php echo esc_html( audubon_get_news_display_date() ); ?></span>
+	              <?php else : ?>
+	                <time datetime="<?php echo get_the_date('y-m-d'); ?>"><?php echo get_the_date(); ?></time>
+	              <?php endif; ?>
+	            </p>
 	            <p class="news-title"><?php echo wp_trim_words(get_the_title(), 40, '...'); ?></p>
 	          </a>
 	        </div>

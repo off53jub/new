@@ -1,52 +1,51 @@
 <?php
 /**
- * Studio Audubon Customizations
+ * Studio Audubon - 機能拡張ファイル
  *
- * テーマ用の機能拡張ファイル。テーマの functions.php から1行 require するだけで動きます。
- *
- *   require_once get_stylesheet_directory() . '/audubon-customizations.php';
+ * 既存テーマ studio_audubon_02 に対する追加機能。
+ * functions.php から require_once で読み込まれます。
  *
  * 対象CPT:
  *   - actor      （アクター）
- *   - news_list  （ニュース）
+ *   - news_list  （ニュース）※既存のCPT
  *   - slides     （スライド）
- *   - post       （Worksは通常投稿）
+ *   - post       （Worksは通常投稿、category=works）
  *
- * メタキーは全て `_audubon_*` で名前空間化しているため、既存フィールドとは衝突しません。
+ * メタキーは全て `_audubon_*` で名前空間化。既存ACFフィールドとは衝突しません。
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-if ( ! defined( 'AUDUBON_THEME_VERSION' ) ) {
-    define( 'AUDUBON_THEME_VERSION', '1.0.0' );
+if ( ! defined( 'AUDUBON_FEATURES_VERSION' ) ) {
+    define( 'AUDUBON_FEATURES_VERSION', '1.0.0' );
 }
 
 /* =============================================================
- * 1. CSS / JS のエンキュー
+ * 1. CSS / JS
  * ============================================================= */
 
-add_action( 'wp_enqueue_scripts', 'audubon_enqueue_assets' );
-function audubon_enqueue_assets() {
-    $base = get_stylesheet_directory_uri();
+add_action( 'wp_enqueue_scripts', 'audubon_features_enqueue', 20 );
+function audubon_features_enqueue() {
+    $base = get_template_directory_uri();
     wp_enqueue_style(
-        'audubon-customizations',
-        $base . '/assets/css/audubon.css',
+        'audubon-features',
+        $base . '/assets/css/audubon-features.css',
         array(),
-        AUDUBON_THEME_VERSION
+        AUDUBON_FEATURES_VERSION
     );
     wp_enqueue_script(
-        'audubon-banner',
-        $base . '/assets/js/audubon-banner.js',
+        'audubon-features',
+        $base . '/assets/js/audubon-features.js',
         array(),
-        AUDUBON_THEME_VERSION,
+        AUDUBON_FEATURES_VERSION,
         true
     );
 }
 
-add_action( 'admin_enqueue_scripts', 'audubon_admin_enqueue' );
-function audubon_admin_enqueue( $hook ) {
+add_action( 'admin_enqueue_scripts', 'audubon_features_admin_enqueue' );
+function audubon_features_admin_enqueue( $hook ) {
     global $post;
     if ( ( $hook === 'post.php' || $hook === 'post-new.php' )
         && $post && $post->post_type === 'actor' ) {
@@ -55,25 +54,7 @@ function audubon_admin_enqueue( $hook ) {
 }
 
 /* =============================================================
- * 2. ニュース（news_list）アーカイブ並び順
- * ============================================================= */
-
-add_action( 'pre_get_posts', 'audubon_order_news_list' );
-function audubon_order_news_list( $query ) {
-    if ( is_admin() || ! $query->is_main_query() ) {
-        return;
-    }
-    if ( $query->is_post_type_archive( 'news_list' ) ) {
-        $query->set( 'meta_key', '_audubon_broadcast_sort' );
-        $query->set( 'orderby', array(
-            'meta_value' => 'DESC',
-            'date'       => 'DESC',
-        ) );
-    }
-}
-
-/* =============================================================
- * 3. メタボックス
+ * 2. メタボックス（追加フィールド）
  * ============================================================= */
 
 add_action( 'add_meta_boxes', 'audubon_register_meta_boxes' );
@@ -227,7 +208,7 @@ function audubon_render_slide_meta_box( $post ) {
     $link    = get_post_meta( $post->ID, '_audubon_slide_link', true );
     ?>
     <p>
-        <span class="description">[audubon_slides] ショートコードでA4ポスター3分割スライダーとして表示する際に使用します。既存テーマのスライド表示には影響しません。</span>
+        <span class="description">トップページのスライダーで「ポスター下のテキスト」「リンク先」として使われます。</span>
     </p>
     <p>
         <label for="audubon_slide_caption"><strong>ポスター下に表示するテキスト（例: 山田太郎 出演）</strong></label><br>
@@ -290,7 +271,7 @@ function audubon_save_meta_boxes( $post_id, $post ) {
 }
 
 /* =============================================================
- * 4. テンプレートタグ（テーマから直接呼び出し可）
+ * 3. テンプレートタグ
  * ============================================================= */
 
 function audubon_get_actor_profile_pdf_url( $actor_id = null ) {
@@ -344,39 +325,60 @@ function audubon_get_news_display_date( $post_id = null, $format = '' ) {
     return get_the_date( $format, $post_id );
 }
 
-function audubon_get_slides( $limit = -1 ) {
-    if ( ! post_type_exists( 'slides' ) ) {
-        return array();
+/**
+ * アクター用「最新の出演」+「PDFダウンロード」のHTML出力。
+ * single-actor.php から呼び出します。
+ */
+function audubon_render_actor_links( $actor_id = null ) {
+    $actor_id = $actor_id ?: get_the_ID();
+    if ( ! $actor_id ) {
+        return;
     }
-    return get_posts( array(
+
+    $info    = audubon_get_actor_latest_information( $actor_id );
+    $pdf_url = audubon_get_actor_profile_pdf_url( $actor_id );
+
+    if ( ! $info && ! $pdf_url ) {
+        return;
+    }
+    ?>
+    <div class="audubon-actor-links">
+        <?php if ( $info ) :
+            $date = audubon_get_news_display_date( $info->ID );
+            ?>
+            <a class="audubon-actor-links__information" href="<?php echo esc_url( get_permalink( $info ) ); ?>">
+                <span class="audubon-actor-links__label">最新の出演</span>
+                <span class="audubon-actor-links__title"><?php echo esc_html( get_the_title( $info ) ); ?></span>
+                <?php if ( $date ) : ?><span class="audubon-actor-links__date"><?php echo esc_html( $date ); ?></span><?php endif; ?>
+            </a>
+        <?php endif; ?>
+
+        <?php if ( $pdf_url ) : ?>
+            <a class="audubon-actor-links__pdf" href="<?php echo esc_url( $pdf_url ); ?>" download target="_blank" rel="noopener">
+                <span class="audubon-actor-links__icon" aria-hidden="true">⬇</span>
+                プロフィールPDFをダウンロード
+            </a>
+        <?php endif; ?>
+    </div>
+    <?php
+}
+
+/**
+ * トップページ用 3分割A4スライダー（slides CPT）。
+ * index.php から呼び出します。
+ */
+function audubon_render_slides_banner() {
+    $slides = get_posts( array(
         'post_type'      => 'slides',
-        'posts_per_page' => $limit,
+        'posts_per_page' => -1,
         'orderby'        => array( 'menu_order' => 'ASC', 'date' => 'DESC' ),
         'post_status'    => 'publish',
     ) );
-}
-
-/* =============================================================
- * 5. ショートコード
- * ============================================================= */
-
-add_shortcode( 'audubon_slides', 'audubon_shortcode_slides' );
-function audubon_shortcode_slides( $atts ) {
-    $atts = shortcode_atts( array(
-        'visible'  => 3,
-        'interval' => 4000,
-    ), $atts, 'audubon_slides' );
-
-    $slides = audubon_get_slides();
     if ( empty( $slides ) ) {
-        return '';
+        return;
     }
-
-    ob_start();
     ?>
-    <div class="audubon-banner"
-         data-visible="<?php echo (int) $atts['visible']; ?>"
-         data-interval="<?php echo (int) $atts['interval']; ?>">
+    <div class="audubon-banner" data-visible="3" data-interval="4000">
         <button class="audubon-banner__nav audubon-banner__nav--prev" aria-label="前へ">‹</button>
         <div class="audubon-banner__viewport">
             <ul class="audubon-banner__track">
@@ -402,97 +404,10 @@ function audubon_shortcode_slides( $atts ) {
         <button class="audubon-banner__nav audubon-banner__nav--next" aria-label="次へ">›</button>
     </div>
     <?php
-    return ob_get_clean();
-}
-
-add_shortcode( 'audubon_works', 'audubon_shortcode_works' );
-function audubon_shortcode_works( $atts ) {
-    $atts = shortcode_atts( array(
-        'category' => '',          // カテゴリで絞り込みたい場合は category="works"
-        'limit'    => -1,
-        'columns'  => 3,
-    ), $atts, 'audubon_works' );
-
-    $args = array(
-        'post_type'      => 'post',  // Worksは通常投稿
-        'posts_per_page' => (int) $atts['limit'],
-        'post_status'    => 'publish',
-        'orderby'        => array( 'menu_order' => 'ASC', 'date' => 'DESC' ),
-    );
-    if ( $atts['category'] ) {
-        $args['category_name'] = sanitize_title( $atts['category'] );
-    }
-
-    $works = get_posts( $args );
-    if ( empty( $works ) ) {
-        return '';
-    }
-
-    ob_start();
-    ?>
-    <ul class="audubon-works audubon-works--cols-<?php echo (int) $atts['columns']; ?>">
-        <?php foreach ( $works as $work ) :
-            $thumb = get_the_post_thumbnail( $work->ID, 'large', array( 'class' => 'audubon-works__image' ) );
-            ?>
-            <li class="audubon-works__item">
-                <a href="<?php echo esc_url( get_permalink( $work ) ); ?>" class="audubon-works__link">
-                    <div class="audubon-works__poster"><?php echo $thumb; ?></div>
-                    <p class="audubon-works__title"><?php echo esc_html( get_the_title( $work ) ); ?></p>
-                </a>
-            </li>
-        <?php endforeach; ?>
-    </ul>
-    <?php
-    return ob_get_clean();
-}
-
-add_shortcode( 'audubon_actor_links', 'audubon_shortcode_actor_links' );
-function audubon_shortcode_actor_links( $atts ) {
-    $atts = shortcode_atts( array( 'id' => 0 ), $atts, 'audubon_actor_links' );
-    $actor_id = (int) $atts['id'] ?: get_the_ID();
-    if ( ! $actor_id ) {
-        return '';
-    }
-
-    $info    = audubon_get_actor_latest_information( $actor_id );
-    $pdf_url = audubon_get_actor_profile_pdf_url( $actor_id );
-    if ( ! $info && ! $pdf_url ) {
-        return '';
-    }
-
-    ob_start();
-    ?>
-    <div class="audubon-actor-links">
-        <?php if ( $info ) :
-            $date = audubon_get_news_display_date( $info->ID );
-            ?>
-            <a class="audubon-actor-links__information" href="<?php echo esc_url( get_permalink( $info ) ); ?>">
-                <span class="audubon-actor-links__label">最新の出演</span>
-                <span class="audubon-actor-links__title"><?php echo esc_html( get_the_title( $info ) ); ?></span>
-                <?php if ( $date ) : ?><span class="audubon-actor-links__date"><?php echo esc_html( $date ); ?></span><?php endif; ?>
-            </a>
-        <?php endif; ?>
-
-        <?php if ( $pdf_url ) : ?>
-            <a class="audubon-actor-links__pdf" href="<?php echo esc_url( $pdf_url ); ?>" download target="_blank" rel="noopener">
-                <span class="audubon-actor-links__icon" aria-hidden="true">⬇</span>
-                プロフィールPDFをダウンロード
-            </a>
-        <?php endif; ?>
-    </div>
-    <?php
-    return ob_get_clean();
-}
-
-add_shortcode( 'audubon_news_date', 'audubon_shortcode_news_date' );
-function audubon_shortcode_news_date( $atts ) {
-    $atts = shortcode_atts( array( 'id' => 0, 'format' => '' ), $atts, 'audubon_news_date' );
-    $id = (int) $atts['id'] ?: get_the_ID();
-    return esc_html( audubon_get_news_display_date( $id, $atts['format'] ) );
 }
 
 /* =============================================================
- * 6. 管理画面の一覧列
+ * 4. 管理画面の一覧列
  * ============================================================= */
 
 add_filter( 'manage_news_list_posts_columns', function ( $columns ) {
@@ -514,19 +429,6 @@ add_action( 'manage_news_list_posts_custom_column', function ( $column, $post_id
         echo esc_html( get_post_meta( $post_id, '_audubon_broadcast_sort', true ) );
     }
 }, 10, 2 );
-add_filter( 'manage_edit-news_list_sortable_columns', function ( $columns ) {
-    $columns['audubon_broadcast_sort'] = 'audubon_broadcast_sort';
-    return $columns;
-} );
-add_action( 'pre_get_posts', function ( $query ) {
-    if ( ! is_admin() || ! $query->is_main_query() ) {
-        return;
-    }
-    if ( $query->get( 'orderby' ) === 'audubon_broadcast_sort' ) {
-        $query->set( 'meta_key', '_audubon_broadcast_sort' );
-        $query->set( 'orderby', 'meta_value' );
-    }
-} );
 
 add_filter( 'manage_slides_posts_columns', function ( $columns ) {
     $new = array();
