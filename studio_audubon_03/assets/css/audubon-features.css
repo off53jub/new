@@ -279,7 +279,38 @@
 }
 
 /* =========================================================
- * 7. 印刷スタイル（プロフィールをPDFで保存）
+ * 7. Pickupセクションは画面サイズに関係なく常に2列
+ *    既存 style.css の `@media (max-width: 767px)` の中で
+ *    `#pickup .flex { flex-flow: column }` `width: 100%`
+ *    によって 1列になっていたものを上書きします。
+ * ========================================================= */
+
+#pickup .flex {
+    display: flex !important;
+    flex-flow: row nowrap !important;
+    gap: 4%;
+    width: 100%;
+    margin: 0 auto;
+}
+#pickup .image-wrapper {
+    width: 48% !important;
+    max-width: 48% !important;
+    flex: 0 0 48%;
+    box-sizing: border-box;
+    margin: 0 0 16px !important;
+    text-align: center;
+}
+#pickup .image-wrapper:first-child {
+    margin-right: 0 !important;
+}
+#pickup .image-wrapper img,
+#pickup .image-wrapper iframe {
+    max-width: 100%;
+    height: auto;
+}
+
+/* =========================================================
+ * 8. 印刷スタイル（プロフィールをPDFで保存）
  *    アクターページの内容だけを綺麗に出力
  * ========================================================= */
 
