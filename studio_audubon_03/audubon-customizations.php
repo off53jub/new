@@ -44,15 +44,6 @@ function audubon_features_enqueue() {
     );
 }
 
-add_action( 'admin_enqueue_scripts', 'audubon_features_admin_enqueue' );
-function audubon_features_admin_enqueue( $hook ) {
-    global $post;
-    if ( ( $hook === 'post.php' || $hook === 'post-new.php' )
-        && $post && $post->post_type === 'actor' ) {
-        wp_enqueue_media();
-    }
-}
-
 /* =============================================================
  * 2. メタボックス（追加フィールド）
  * ============================================================= */
@@ -69,22 +60,9 @@ function audubon_register_meta_boxes() {
         'audubon_render_slide_meta_box', 'slides', 'normal', 'high' );
 }
 
-function audubon_get_pdf_display( $attachment_id ) {
-    if ( ! $attachment_id ) {
-        return '';
-    }
-    $url   = wp_get_attachment_url( $attachment_id );
-    $title = get_the_title( $attachment_id );
-    if ( ! $url ) {
-        return '';
-    }
-    return sprintf( '<a href="%s" target="_blank">%s</a>', esc_url( $url ), esc_html( $title ) );
-}
-
 function audubon_render_actor_meta_box( $post ) {
     wp_nonce_field( 'audubon_actor_meta', 'audubon_actor_meta_nonce' );
 
-    $profile_pdf_id = get_post_meta( $post->ID, '_audubon_profile_pdf_id', true );
     $latest_info_id = get_post_meta( $post->ID, '_audubon_latest_information_id', true );
     $auto_latest    = get_post_meta( $post->ID, '_audubon_auto_latest_information', true );
     if ( $auto_latest === '' ) {
@@ -98,18 +76,6 @@ function audubon_render_actor_meta_box( $post ) {
         'order'          => 'DESC',
     ) );
     ?>
-    <p>
-        <label><strong>プロフィールPDF</strong></label><br>
-        <input type="hidden" name="audubon_profile_pdf_id" id="audubon_profile_pdf_id" value="<?php echo esc_attr( $profile_pdf_id ); ?>">
-        <button type="button" class="button" id="audubon_profile_pdf_select">PDFを選択</button>
-        <button type="button" class="button" id="audubon_profile_pdf_remove">削除</button>
-        <span id="audubon_profile_pdf_preview" style="margin-left:8px;">
-            <?php echo audubon_get_pdf_display( $profile_pdf_id ); ?>
-        </span>
-    </p>
-
-    <hr>
-
     <p>
         <label>
             <input type="checkbox" name="audubon_auto_latest_information" value="1" <?php checked( $auto_latest, '1' ); ?>>
@@ -128,33 +94,11 @@ function audubon_render_actor_meta_box( $post ) {
         </select>
         <br><span class="description">「自動」がONの場合は、このアクターが紐付けられたニュース記事のうち最新のものが表示されます。手動指定があればそちらが優先されます。</span>
     </p>
-
-    <script>
-    (function($){
-        var customUploader;
-        $('#audubon_profile_pdf_select').on('click', function(e){
-            e.preventDefault();
-            if (customUploader) { customUploader.open(); return; }
-            customUploader = wp.media({
-                title: 'プロフィールPDFを選択',
-                library: { type: 'application/pdf' },
-                button: { text: 'この PDF を使用' },
-                multiple: false
-            });
-            customUploader.on('select', function(){
-                var attachment = customUploader.state().get('selection').first().toJSON();
-                $('#audubon_profile_pdf_id').val(attachment.id);
-                $('#audubon_profile_pdf_preview').html('<a href="'+attachment.url+'" target="_blank">'+attachment.filename+'</a>');
-            });
-            customUploader.open();
-        });
-        $('#audubon_profile_pdf_remove').on('click', function(e){
-            e.preventDefault();
-            $('#audubon_profile_pdf_id').val('');
-            $('#audubon_profile_pdf_preview').html('');
-        });
-    })(jQuery);
-    </script>
+    <hr>
+    <p style="color:#666;">
+        <strong>プロフィールPDF:</strong> アクターページに表示される「プロフィールをPDFで保存」ボタンは、ブラウザの印刷機能を使ってこのプロフィールページの内容をそのままPDF化するものです。<br>
+        手動でPDFを用意・アップロードする必要はありません。プロフィール本文を編集すれば、PDFの内容も自動で更新されます。
+    </p>
     <?php
 }
 
@@ -252,8 +196,6 @@ function audubon_save_meta_boxes( $post_id, $post ) {
         && isset( $_POST['audubon_actor_meta_nonce'] )
         && wp_verify_nonce( $_POST['audubon_actor_meta_nonce'], 'audubon_actor_meta' ) ) {
 
-        update_post_meta( $post_id, '_audubon_profile_pdf_id',
-            isset( $_POST['audubon_profile_pdf_id'] ) ? absint( $_POST['audubon_profile_pdf_id'] ) : 0 );
         update_post_meta( $post_id, '_audubon_latest_information_id',
             isset( $_POST['audubon_latest_information_id'] ) ? absint( $_POST['audubon_latest_information_id'] ) : 0 );
         update_post_meta( $post_id, '_audubon_auto_latest_information',
@@ -289,12 +231,6 @@ function audubon_save_meta_boxes( $post_id, $post ) {
 /* =============================================================
  * 3. テンプレートタグ
  * ============================================================= */
-
-function audubon_get_actor_profile_pdf_url( $actor_id = null ) {
-    $actor_id = $actor_id ?: get_the_ID();
-    $pdf_id   = (int) get_post_meta( $actor_id, '_audubon_profile_pdf_id', true );
-    return $pdf_id ? wp_get_attachment_url( $pdf_id ) : '';
-}
 
 function audubon_get_actor_latest_information( $actor_id = null ) {
     $actor_id = $actor_id ?: get_the_ID();
@@ -350,7 +286,11 @@ function audubon_get_news_display_date( $post_id = null, $format = '' ) {
 }
 
 /**
- * アクター用「最新の出演」+「PDFダウンロード」のHTML出力。
+ * アクター用「最新の出演」リンク + 「プロフィールをPDFで保存」ボタンのHTML出力。
+ *
+ * PDFはブラウザの印刷機能でこのプロフィールページの内容をそのままPDF化する形式です。
+ * （手動でPDFをアップロードする必要はありません）
+ *
  * single-actor.php から呼び出します。
  */
 function audubon_render_actor_links( $actor_id = null ) {
@@ -359,12 +299,7 @@ function audubon_render_actor_links( $actor_id = null ) {
         return;
     }
 
-    $info    = audubon_get_actor_latest_information( $actor_id );
-    $pdf_url = audubon_get_actor_profile_pdf_url( $actor_id );
-
-    if ( ! $info && ! $pdf_url ) {
-        return;
-    }
+    $info = audubon_get_actor_latest_information( $actor_id );
     ?>
     <div class="audubon-actor-links">
         <?php if ( $info ) :
@@ -377,12 +312,10 @@ function audubon_render_actor_links( $actor_id = null ) {
             </a>
         <?php endif; ?>
 
-        <?php if ( $pdf_url ) : ?>
-            <a class="audubon-actor-links__pdf" href="<?php echo esc_url( $pdf_url ); ?>" download target="_blank" rel="noopener">
-                <span class="audubon-actor-links__icon" aria-hidden="true">⬇</span>
-                プロフィールPDFをダウンロード
-            </a>
-        <?php endif; ?>
+        <button type="button" class="audubon-actor-links__pdf" data-audubon-print="1">
+            <span class="audubon-actor-links__icon" aria-hidden="true">⬇</span>
+            プロフィールをPDFで保存
+        </button>
     </div>
     <?php
 }
@@ -475,17 +408,12 @@ add_filter( 'manage_actor_posts_columns', function ( $columns ) {
     foreach ( $columns as $key => $label ) {
         $new[ $key ] = $label;
         if ( $key === 'title' ) {
-            $new['audubon_actor_pdf']  = 'プロフィールPDF';
             $new['audubon_actor_news'] = '最新の出演';
         }
     }
     return $new;
 } );
 add_action( 'manage_actor_posts_custom_column', function ( $column, $post_id ) {
-    if ( $column === 'audubon_actor_pdf' ) {
-        $url = audubon_get_actor_profile_pdf_url( $post_id );
-        echo $url ? '<a href="' . esc_url( $url ) . '" target="_blank">PDF</a>' : '—';
-    }
     if ( $column === 'audubon_actor_news' ) {
         $info = audubon_get_actor_latest_information( $post_id );
         if ( $info ) {

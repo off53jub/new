@@ -89,5 +89,15 @@
     ready(function () {
         var banners = document.querySelectorAll('.audubon-banner');
         Array.prototype.forEach.call(banners, initBanner);
+
+        // 「プロフィールをPDFで保存」ボタン → ブラウザの印刷機能を呼び出す
+        // ユーザは印刷ダイアログから「PDFとして保存」を選んでダウンロードします
+        document.addEventListener('click', function (e) {
+            var trigger = e.target.closest && e.target.closest('[data-audubon-print="1"]');
+            if (trigger) {
+                e.preventDefault();
+                window.print();
+            }
+        });
     });
 })();
