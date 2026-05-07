@@ -90,20 +90,11 @@
      * スプラッシュ（ローディング画面）の制御。
      * - ホームページにのみ DOM が出力されている
      * - 画像のロードが終わってから最低 1.6s 表示してフェードアウト
-     * - 同一セッション中に2回目以降は表示しない（sessionStorage）
+     * - ホームページを開くたびに毎回表示します
      */
     function initSplash() {
         var splash = document.getElementById('audubon-splash');
         if (!splash) return;
-
-        // 同セッション中の2回目以降のページ表示ではスキップ
-        try {
-            if (sessionStorage.getItem('audubonSplashSeen') === '1') {
-                splash.parentNode && splash.parentNode.removeChild(splash);
-                return;
-            }
-            sessionStorage.setItem('audubonSplashSeen', '1');
-        } catch (e) { /* sessionStorage 不可な環境では無視 */ }
 
         document.body.classList.add('audubon-splash-active');
 
