@@ -86,7 +86,57 @@
         document.addEventListener('DOMContentLoaded', fn);
     }
 
+    /**
+     * スプラッシュ（ローディング画面）の制御。
+     * - ホームページにのみ DOM が出力されている
+     * - 画像のロードが終わってから最低 1.6s 表示してフェードアウト
+     * - 同一セッション中に2回目以降は表示しない（sessionStorage）
+     */
+    function initSplash() {
+        var splash = document.getElementById('audubon-splash');
+        if (!splash) return;
+
+        // 同セッション中の2回目以降のページ表示ではスキップ
+        try {
+            if (sessionStorage.getItem('audubonSplashSeen') === '1') {
+                splash.parentNode && splash.parentNode.removeChild(splash);
+                return;
+            }
+            sessionStorage.setItem('audubonSplashSeen', '1');
+        } catch (e) { /* sessionStorage 不可な環境では無視 */ }
+
+        document.body.classList.add('audubon-splash-active');
+
+        var img = splash.querySelector('.audubon-splash__image');
+        var minDisplayMs = 1600;
+        var fadeMs = 700;
+        var startedAt = Date.now();
+
+        function hide() {
+            var elapsed = Date.now() - startedAt;
+            var wait = Math.max(0, minDisplayMs - elapsed);
+            window.setTimeout(function () {
+                splash.classList.add('audubon-splash--hidden');
+                document.body.classList.remove('audubon-splash-active');
+                window.setTimeout(function () {
+                    if (splash.parentNode) splash.parentNode.removeChild(splash);
+                }, fadeMs);
+            }, wait);
+        }
+
+        if (img && !img.complete) {
+            img.addEventListener('load', hide);
+            img.addEventListener('error', hide);
+            // 念のため7秒後にフォールバックで強制非表示
+            window.setTimeout(hide, 7000);
+        } else {
+            hide();
+        }
+    }
+
     ready(function () {
+        initSplash();
+
         var banners = document.querySelectorAll('.audubon-banner');
         Array.prototype.forEach.call(banners, initBanner);
 

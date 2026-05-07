@@ -89,6 +89,13 @@
 </head>
 
 <body <?php body_class(); ?>>
+<?php if ( is_front_page() || is_home() ) : ?>
+  <!-- ホームページ用スプラッシュ（ローディング画面） -->
+  <div class="audubon-splash" id="audubon-splash" role="presentation" aria-hidden="true">
+    <img src="<?php echo get_template_directory_uri(); ?>/images/audubon_top_keyvisual.jpg"
+         alt="" class="audubon-splash__image">
+  </div>
+<?php endif; ?>
   <!-- <?php
 global $template;
 $description = '[適用テンプレートファイル名]';
