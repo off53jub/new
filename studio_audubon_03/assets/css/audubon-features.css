@@ -25,17 +25,36 @@
     pointer-events: none;
 }
 .audubon-splash__image {
-    /* 画面いっぱいに広げて表示。画像の縦横比に応じて中央を残し、はみ出る部分はトリミング */
-    width: 100vw;
-    height: 100vh;
-    object-fit: cover;
+    /* デフォルト = スマホ：画面のほぼ全幅で、画像本来のアスペクト比を維持 */
+    width: 92vw;
+    max-height: 80vh;
+    height: auto;
+    object-fit: contain;
     object-position: center;
     display: block;
     /* 軽くズームインしてくる演出 */
     animation: audubon-splash-zoom 2.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+
+/* タブレット */
+@media (min-width: 768px) {
+    .audubon-splash__image {
+        width: 82vw;
+        max-height: 78vh;
+    }
+}
+
+/* PC */
+@media (min-width: 1200px) {
+    .audubon-splash__image {
+        width: 72vw;
+        max-width: 1280px;
+        max-height: 76vh;
+    }
+}
+
 @keyframes audubon-splash-zoom {
-    0%   { transform: scale(1.08); opacity: 0; }
+    0%   { transform: scale(1.06); opacity: 0; }
     20%  { opacity: 1; }
     100% { transform: scale(1.0);  opacity: 1; }
 }
