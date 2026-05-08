@@ -118,16 +118,16 @@ body.audubon-splash-active {
     overflow: hidden;
     display: flex;
     height: 100%;
-    min-height: 560px;       /* ポスター画像が縦に十分大きく表示されるサイズ */
+    /* カードの縦幅は左側のA4ポスター画像の高さで自然に決まる */
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 .audubon-topics__media {
     flex: 0 0 38%;
     max-width: 38%;
     background: #f4f4f4;
-    display: flex;
-    align-items: stretch;
-    justify-content: center;
+    /* カード全体の高さに引き伸ばさず、A4比率（210:297）の縦長サイズに収める */
+    align-self: flex-start;
+    aspect-ratio: 210 / 297;
     overflow: hidden;
 }
 .audubon-topics__image,
@@ -250,7 +250,6 @@ body.audubon-splash-active {
 @media (max-width: 900px) {
     .audubon-topics__viewport-wrap { padding: 0 44px; }
     .audubon-topics__item { padding: 0 8px; }
-    .audubon-topics__card { min-height: 460px; }
     .audubon-topics__media { flex: 0 0 36%; max-width: 36%; }
     .audubon-topics__body { padding: 18px 20px 22px; }
     .audubon-topics__heading { font-size: 1rem; }
