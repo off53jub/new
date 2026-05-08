@@ -28,7 +28,7 @@
     /* デフォルト = スマホ：横幅いっぱい、高さは画像のアスペクト比に応じて自動 */
     width: 100vw;
     height: auto;
-    max-height: 90vh;
+    max-height: 92vh;
     object-fit: contain;
     object-position: center;
     display: block;
@@ -39,15 +39,15 @@
 /* タブレット */
 @media (min-width: 768px) {
     .audubon-splash__image {
-        width: 96vw;
+        width: 100vw;
     }
 }
 
-/* PC：横幅を画面幅近くまで使い、高さも比例して大きく */
+/* PC：画面幅いっぱいまで使い、画像を最大限大きく表示 */
 @media (min-width: 1200px) {
     .audubon-splash__image {
-        width: 92vw;
-        max-width: 1800px;
+        width: 100vw;
+        max-width: none;
     }
 }
 
