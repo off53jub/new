@@ -7,12 +7,13 @@
 <div id="container" class="toppage">
 
   <?php
-  // TOPICSスライダー（slides CPT）。
-  // 濃紺の背景を画面端まで伸ばすため、.contents ラッパーの外に出力します。
+  // TOPICSスライダー（slides CPT）
   if ( function_exists( 'audubon_render_slides_banner' ) ) {
       audubon_render_slides_banner();
   }
   ?>
+
+  <hr>
 
   <section id="news">
     <div class="contents news-area">

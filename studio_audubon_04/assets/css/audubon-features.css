@@ -67,45 +67,22 @@ body.audubon-splash-active {
 
 /* =========================================================
  * 1. TOPICSスライダー（トップページ）
- *    濃紺背景の中で白カード2枚を並べ、左右ナビ + 下部ドット送り
+ *    既存のInformation / Pickup / Worksセクションと色・フォントを揃え、
+ *    白背景・装飾線なし・<hr>区切りのみのシンプルな構成。
+ *    タイトルは既存テーマの .section-title をそのまま使用。
  * ========================================================= */
 
 .audubon-topics {
     position: relative;
     width: 100%;
-    background: #0a3a73; /* 濃紺。スクリーンショットに合わせた近似色 */
-    color: #fff;
-    padding: 56px 0 64px;
+    background: transparent; /* 既存セクションに合わせる（白） */
+    color: inherit;
     box-sizing: border-box;
 }
 .audubon-topics__inner {
-    width: 100%;
-    max-width: 1240px;
-    margin: 0 auto;
-    padding: 0 16px;
-    box-sizing: border-box;
-}
-
-/* タイトル */
-.audubon-topics__header {
-    text-align: center;
-    margin: 0 0 36px;
-}
-.audubon-topics__title {
-    font-family: "EB Garamond", "Times New Roman", serif;
-    font-size: clamp(28px, 4vw, 42px);
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    color: #fff;
-    margin: 0 0 12px;
-    line-height: 1;
-}
-.audubon-topics__title-line {
-    display: inline-block;
-    width: 36px;
-    height: 2px;
-    background: #fff;
-    opacity: 0.85;
+    /* .contents（既存）の中で配置。タイトル下に余白だけ追加 */
+    padding-top: 4px;
+    padding-bottom: 8px;
 }
 
 /* 表示領域（左右ナビ + viewport） */
@@ -132,15 +109,16 @@ body.audubon-splash-active {
     padding: 0 14px;
 }
 
-/* カード本体 */
+/* カード本体（白背景上で見えるように薄いボーダー＋微シャドウ） */
 .audubon-topics__card {
     background: #fff;
     color: #222;
+    border: 1px solid #e6e6e6;
     border-radius: 4px;
     overflow: hidden;
     display: flex;
     height: 100%;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 .audubon-topics__media {
     flex: 0 0 38%;
@@ -161,21 +139,14 @@ body.audubon-splash-active {
 }
 .audubon-topics__body {
     flex: 1 1 auto;
-    padding: 26px 26px 28px;
+    padding: 24px 26px 26px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-}
-.audubon-topics__accent {
-    display: inline-block;
-    width: 28px;
-    height: 2px;
-    background: #222;
-    margin-bottom: 4px;
+    gap: 8px;
 }
 .audubon-topics__heading {
     margin: 0;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-weight: 700;
     line-height: 1.4;
     color: #222;
@@ -195,23 +166,23 @@ body.audubon-splash-active {
     flex: 1 1 auto;
 }
 .audubon-topics__cta-wrap {
-    margin: 12px 0 0;
+    margin: 14px 0 0;
 }
 .audubon-topics__cta {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     padding: 10px 28px;
-    border: 1px solid #0a3a73;
+    border: 1px solid #444;
     border-radius: 999px;
-    color: #0a3a73;
+    color: #222;
     background: #fff;
     text-decoration: none;
     font-size: 0.92rem;
     transition: background 0.2s, color 0.2s;
 }
 .audubon-topics__cta:hover {
-    background: #0a3a73;
+    background: #222;
     color: #fff;
     text-decoration: none;
 }
@@ -220,13 +191,13 @@ body.audubon-splash-active {
     line-height: 1;
 }
 
-/* 左右ナビボタン */
+/* 左右ナビボタン（白背景に合わせて濃いめのグレー） */
 .audubon-topics__nav {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     background: transparent;
-    color: #fff;
+    color: #444;
     border: 0;
     width: 44px;
     height: 44px;
@@ -234,10 +205,10 @@ body.audubon-splash-active {
     font-size: 36px;
     line-height: 1;
     z-index: 2;
-    opacity: 0.85;
-    transition: opacity 0.2s;
+    opacity: 0.7;
+    transition: opacity 0.2s, color 0.2s;
 }
-.audubon-topics__nav:hover { opacity: 1; }
+.audubon-topics__nav:hover { opacity: 1; color: #000; }
 .audubon-topics__nav--prev { left: 0; }
 .audubon-topics__nav--next { right: 0; }
 .audubon-topics__nav span {
@@ -245,42 +216,39 @@ body.audubon-splash-active {
     line-height: 1;
 }
 
-/* 下部ドット送り */
+/* 下部ドット送り（白背景用に薄いグレー） */
 .audubon-topics__dots {
     list-style: none;
-    margin: 28px 0 0;
+    margin: 22px 0 0;
     padding: 0;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 10px;
 }
-.audubon-topics__dots li {
-    display: block;
-}
+.audubon-topics__dots li { display: block; }
 .audubon-topics__dot {
-    width: 10px;
-    height: 10px;
+    width: 9px;
+    height: 9px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.35);
+    background: #d0d0d0;
     border: 0;
     padding: 0;
     cursor: pointer;
     transition: background 0.2s, transform 0.2s;
 }
-.audubon-topics__dot:hover { background: rgba(255, 255, 255, 0.6); }
+.audubon-topics__dot:hover { background: #999; }
 .audubon-topics__dot--active {
-    background: #fff;
-    transform: scale(1.15);
+    background: #444;
+    transform: scale(1.2);
 }
 
 /* タブレット */
 @media (max-width: 900px) {
-    .audubon-topics { padding: 44px 0 48px; }
     .audubon-topics__viewport-wrap { padding: 0 44px; }
     .audubon-topics__item { padding: 0 8px; }
     .audubon-topics__media { flex: 0 0 36%; max-width: 36%; }
-    .audubon-topics__body { padding: 20px 20px 22px; }
+    .audubon-topics__body { padding: 18px 20px 22px; }
     .audubon-topics__heading { font-size: 1rem; }
     .audubon-topics__description { font-size: 0.85rem; }
     .audubon-topics__cta { padding: 8px 22px; font-size: 0.85rem; }
@@ -288,7 +256,6 @@ body.audubon-splash-active {
 
 /* スマホ：1列表示にする */
 @media (max-width: 600px) {
-    .audubon-topics { padding: 36px 0 44px; }
     .audubon-topics__viewport-wrap { padding: 0 36px; }
     .audubon-topics__item { flex: 0 0 100%; padding: 0; }
     .audubon-topics__nav {

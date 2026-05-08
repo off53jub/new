@@ -374,12 +374,9 @@ function audubon_render_slides_banner() {
         return;
     }
     ?>
-    <section class="audubon-topics" data-visible="2" data-interval="5500">
-        <div class="audubon-topics__inner">
-            <header class="audubon-topics__header">
-                <h2 class="audubon-topics__title">TOPICS</h2>
-                <span class="audubon-topics__title-line" aria-hidden="true"></span>
-            </header>
+    <section id="topics" class="audubon-topics" data-visible="2" data-interval="5500">
+        <div class="contents audubon-topics__inner">
+            <h2 class="section-title">TOPICS</h2>
 
             <div class="audubon-topics__viewport-wrap">
                 <button class="audubon-topics__nav audubon-topics__nav--prev" aria-label="前へ">
@@ -415,7 +412,6 @@ function audubon_render_slides_banner() {
                                         <?php echo $thumb; ?>
                                     </div>
                                     <div class="audubon-topics__body">
-                                        <span class="audubon-topics__accent" aria-hidden="true"></span>
                                         <p class="audubon-topics__heading"><?php echo esc_html( $heading ); ?></p>
                                         <?php if ( $actor_name ) : ?>
                                             <p class="audubon-topics__actor">【 <?php echo esc_html( $actor_name ); ?> 】</p>
