@@ -595,3 +595,19 @@ body.audubon-splash-active {
         padding: 2pt 0 !important;
     }
 }
+
+/* =========================================================
+ * 9. Information（ニュース）一覧の位置調整
+ *    トップページで、見出し「Information」と本文の縦・横位置を整える。
+ *    ・本文を一段（約1行分）下げる
+ *    ・記事を中央寄せから少し左寄せに
+ * ========================================================= */
+@media (min-width: 768px) {
+    body.home #news .news-list-inner {
+        padding-top: 60px;
+    }
+    body.home #news .news-list {
+        margin-left: 0;
+        margin-right: auto;
+    }
+}
