@@ -118,6 +118,7 @@ body.audubon-splash-active {
     overflow: hidden;
     display: flex;
     height: 100%;
+    min-height: 560px;       /* ポスター画像が縦に十分大きく表示されるサイズ */
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 .audubon-topics__media {
@@ -167,6 +168,8 @@ body.audubon-splash-active {
 }
 .audubon-topics__cta-wrap {
     margin: 14px 0 0;
+    margin-top: auto; /* カードが縦長のときCTAは下端に貼り付く */
+    padding-top: 14px;
 }
 .audubon-topics__cta {
     display: inline-flex;
@@ -247,6 +250,7 @@ body.audubon-splash-active {
 @media (max-width: 900px) {
     .audubon-topics__viewport-wrap { padding: 0 44px; }
     .audubon-topics__item { padding: 0 8px; }
+    .audubon-topics__card { min-height: 460px; }
     .audubon-topics__media { flex: 0 0 36%; max-width: 36%; }
     .audubon-topics__body { padding: 18px 20px 22px; }
     .audubon-topics__heading { font-size: 1rem; }
@@ -265,6 +269,7 @@ body.audubon-splash-active {
     }
     .audubon-topics__card {
         flex-direction: column;
+        min-height: 0; /* 縦並びになるので min-height 制約は外す */
     }
     .audubon-topics__media {
         flex: 0 0 auto;
