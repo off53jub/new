@@ -28,8 +28,8 @@
     /* デフォルト = スマホ：縦に余裕を持たせた枠 */
     width: 96vw;
     height: 55vh;
-    /* 枠を埋めるよう拡大しつつ中央を残す（左右が少しトリミングされる場合あり） */
-    object-fit: cover;
+    /* オリジナルのアスペクト比を維持、切り取りなし */
+    object-fit: contain;
     object-position: center;
     display: block;
     /* 軽くズームインしてくる演出 */
