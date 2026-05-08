@@ -25,11 +25,11 @@
     pointer-events: none;
 }
 .audubon-splash__image {
-    /* デフォルト = スマホ：画面のほぼ全幅で、画像本来のアスペクト比を維持 */
-    width: 92vw;
-    max-height: 80vh;
-    height: auto;
-    object-fit: contain;
+    /* デフォルト = スマホ：縦に余裕を持たせた枠 */
+    width: 96vw;
+    height: 55vh;
+    /* 枠を埋めるよう拡大しつつ中央を残す（左右が少しトリミングされる場合あり） */
+    object-fit: cover;
     object-position: center;
     display: block;
     /* 軽くズームインしてくる演出 */
@@ -39,17 +39,17 @@
 /* タブレット */
 @media (min-width: 768px) {
     .audubon-splash__image {
-        width: 82vw;
-        max-height: 78vh;
+        width: 88vw;
+        height: 60vh;
     }
 }
 
 /* PC */
 @media (min-width: 1200px) {
     .audubon-splash__image {
-        width: 72vw;
-        max-width: 1280px;
-        max-height: 76vh;
+        width: 80vw;
+        max-width: 1500px;
+        height: 65vh;
     }
 }
 
