@@ -599,15 +599,24 @@ body.audubon-splash-active {
 /* =========================================================
  * 9. Information（ニュース）一覧の位置調整
  *    トップページで、見出し「Information」と本文の縦・横位置を整える。
- *    ・本文を一段（約1行分）下げる
- *    ・記事を中央寄せから少し左寄せに
+ *    ・既存の flex（左右並び）をやめて、見出しの下に本文を配置
+ *    ・本文を「Information」文字の中央あたりから左寄せで開始
  * ========================================================= */
 @media (min-width: 768px) {
+    body.home #news .contents.news-area {
+        display: block;
+    }
+    body.home #news .section-title {
+        padding-right: 0;
+        margin-bottom: 16px;
+    }
     body.home #news .news-list-inner {
-        padding-top: 60px;
+        padding: 0 0 5px;
+        margin-left: 6em; /* "Information" 文字のだいたい中央くらいの位置 */
     }
     body.home #news .news-list {
         margin-left: 0;
         margin-right: auto;
+        max-width: 100%;
     }
 }
