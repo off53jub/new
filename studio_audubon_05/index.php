@@ -21,7 +21,7 @@
       <div class="news-list-inner">
         <?php
 $args = array(
-    'posts_per_page' => 5, // 表示件数の指定
+    'posts_per_page' => 10, // 表示件数の指定（Information ホームページ表示）
     'post_type' => 'news_list',
     // 並び替え用日付（_audubon_broadcast_sort）が設定されていればそれを優先、無ければ投稿日。
     // OR + EXISTS / NOT EXISTS にしないと「メタが無い既存投稿」が除外されてしまうので注意。
@@ -61,6 +61,9 @@ foreach ($posts as $post): // ループの開始
 endforeach; // ループの終了
 wp_reset_postdata(); // 直前のクエリを復元する
 ?>
+      </div>
+      <div class="works-button">
+        <a href="<?php echo home_url('/news'); ?>">INFORMATION一覧はこちら</a>
       </div>
     </div>
   </section>

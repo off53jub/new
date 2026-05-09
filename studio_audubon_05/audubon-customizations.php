@@ -348,10 +348,7 @@ function audubon_render_actor_links( $actor_id = null ) {
             </a>
         <?php endif; ?>
 
-        <button type="button" class="audubon-actor-links__pdf" data-audubon-print="1">
-            <span class="audubon-actor-links__icon" aria-hidden="true">⬇</span>
-            プロフィールをPDFで保存
-        </button>
+        <?php /* PDF保存ボタンは廃止 */ ?>
     </div>
     <?php
 }
