@@ -84,7 +84,7 @@ wp_reset_postdata(); // 直前のクエリを復元する
       ?>
       <div class="flex">
         <figure class="image-wrapper">
-          <a href="https://studio-audubon.jp/actor/shiraishi_kayoko" aria-label="白石加代子「百物語」">
+          <a href="https://studio-audubon.jp/actor/shiraishi_kayoko#hyakumonogatari" aria-label="白石加代子「百物語」">
             <img src="<?php echo get_template_directory_uri(); ?>/images/pickup_thumnail_01.jpg" alt="白石加代子の「百物語」" loading="lazy">
           </a>
         </figure>
