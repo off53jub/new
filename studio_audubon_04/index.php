@@ -75,7 +75,9 @@ wp_reset_postdata(); // 直前のクエリを復元する
       <h2 class="section-title">Pick up</h2>
       <div class="flex">
         <figure class="image-wrapper">
-          <img src="<?php echo get_template_directory_uri(); ?>/images/pickup_thumnail_01.jpg" alt="pickupアイキャッチ画像その1">
+          <a href="https://studio-audubon.jp/actor/shiraishi_kayoko" aria-label="白石加代子「百物語」">
+            <img src="<?php echo get_template_directory_uri(); ?>/images/pickup_thumnail_01.jpg" alt="白石加代子の「百物語」" loading="lazy">
+          </a>
         </figure>
         <figure class="image-wrapper">
 			<?php the_field('pickup_youtube_code'); ?>
