@@ -115,7 +115,7 @@
 
    header {
      width: 100%;
-     border-top: solid 2px #7a2233;
+     border-top: solid 2px #4B0000;
    }
 
    .header-inner:after {
@@ -197,7 +197,7 @@
    }
 
    .header-navi ul li a::after {
-     background-color: #7a2233;
+     background-color: #4B0000;
    }
 
    .footer-navi ul li a {
@@ -439,13 +439,13 @@
    }
 
    .footer-sns {
-     color: #b80910;
+     color: #4B0000;
      font-size: 30px;
      margin: 15px 0px;
    }
 
    .footer-sns a {
-     color: #b80910;
+     color: #4B0000;
    }
 
    .footer-sns a:not(:last-child) {
@@ -454,7 +454,7 @@
 
    .footer-bottom {
      padding: 10px 0;
-     background: #b80910;
+     background: #4B0000;
    }
 
    .footer-bottom p {
@@ -883,13 +883,13 @@
 
    .works-date a {
      font-size: 0.8em;
-     color: #7a2233;
+     color: #4B0000;
      line-height: 25px;
    }
 
    .works-date time {
      font-size: 0.8em;
-     color: #7a2233;
+     color: #4B0000;
      line-height: 25px;
    }
 
@@ -921,7 +921,7 @@
      font-size: 1em;
      font-weight: 100;
      text-decoration: none;
-     background-color: #7a2233;
+     background-color: #4B0000;
      color: #ffffff;
      display: block;
      height: 50px;
@@ -1063,8 +1063,8 @@
      display: block;
      margin: 0 5px;
      padding: 6px 12px;
-     border: solid 1px #7a2233;
-     color: #7a2233;
+     border: solid 1px #4B0000;
+     color: #4B0000;
      font-size: 14px;
      text-decoration: none;
      border-radius: 5px;
@@ -1074,7 +1074,7 @@
      display: block;
      margin: 0 5px;
      padding: 6px 12px;
-     border: solid 1px #7a2233;
+     border: solid 1px #4B0000;
      color: #ffffff;
      font-size: 14px;
      text-decoration: none;
@@ -1082,7 +1082,7 @@
    }
 
    .pagination li>span {
-     background-color: #7a2233;
+     background-color: #4B0000;
    }
 
    .pagination ul:after {
@@ -1100,7 +1100,7 @@
      padding: 6px 2px;
      border-color: transparent;
      background-color: transparent;
-     color: #7a2233;
+     color: #4B0000;
    }
 
    /*ÃƒÂ¦Ã…Â Ã¢â‚¬Â¢ÃƒÂ§Ã‚Â¨Ã‚Â¿ÃƒÂ¨Ã‚Â¨Ã‹Å“ÃƒÂ¤Ã‚ÂºÃ¢â‚¬Â¹ÃƒÂ¤Ã‚Â¸Ã¢â€šÂ¬ÃƒÂ¨Ã‚Â¦Ã‚Â§ÃƒÂ£Ã‚ÂÃ‚Â®ÃƒÂ£Ã†â€™Ã…Â¡ÃƒÂ£Ã†â€™Ã‚Â¼ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â¸ÃƒÂ£Ã†â€™Ã‚ÂÃƒÂ£Ã†â€™Ã‚Â¼ÃƒÂ£Ã¢â‚¬Å¡Ã‚Â·ÃƒÂ£Ã†â€™Ã‚Â§ÃƒÂ£Ã†â€™Ã‚Â³*/
@@ -1249,7 +1249,7 @@
      margin-top: 10px;
      margin-bottom: 10px;
      font-size: 1em;
-     color: #7a2233;
+     color: #4B0000;
    }
 
    .single-cat ul {
@@ -1282,7 +1282,7 @@
    }
 
    .single-text h2 a {
-     color: #b80910;
+     color: #4B0000;
      text-decoration: none;
      font-size: 16px;
      font-weight: 600;
@@ -1335,7 +1335,7 @@
      margin-bottom: 0.2em;
      padding: 2px 5px;
      font-size: 0.8em;
-     background: #7a2233;
+     background: #4B0000;
      color: #ffffff;
    }
 
@@ -1362,12 +1362,12 @@
      width: 180px;
      font-size: 1em;
      padding: 5px 0;
-     background-color: #7a2233;
+     background-color: #4B0000;
      color: #ffffff;
      border-radius: 30px;
      box-shadow: none;
      border: none;
-     border: 1px #7a2233 solid;
+     border: 1px #4B0000 solid;
    }
 
    .contact-btn input[type="reset"] {

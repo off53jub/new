@@ -416,11 +416,17 @@ function audubon_render_slides_banner() {
                                         <?php if ( $description ) : ?>
                                             <p class="audubon-topics__description"><?php echo nl2br( esc_html( $description ) ); ?></p>
                                         <?php endif; ?>
-                                        <?php if ( $link ) : ?>
+                                        <?php
+                                        // 「詳細はコチラ」ボタンは常時表示。
+                                        // 編集画面でリンク先URLが設定されていればそれを使い、
+                                        // 空欄ならスライド投稿自身のパーマリンクにフォールバック。
+                                        $cta_url = $link ?: get_permalink( $slide );
+                                        ?>
+                                        <?php if ( $cta_url ) : ?>
                                             <p class="audubon-topics__cta-wrap">
-                                                <a class="audubon-topics__cta" href="<?php echo esc_url( $link ); ?>">
+                                                <a class="audubon-topics__cta" href="<?php echo esc_url( $cta_url ); ?>">
                                                     <span class="audubon-topics__cta-arrow" aria-hidden="true">›</span>
-                                                    詳しくはこちらから
+                                                    詳細はコチラ
                                                 </a>
                                             </p>
                                         <?php endif; ?>
