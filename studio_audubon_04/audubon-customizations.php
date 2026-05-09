@@ -130,7 +130,7 @@ function audubon_render_news_meta_box( $post ) {
                placeholder="例: 2025年8月13日(水)21:00〜 / 毎週土曜 / 公開中 など">
     </p>
     <p style="margin:0 0 14px;color:#666;">
-        この投稿の一覧・詳細で表示される日時テキストです。<strong>ここに入力した内容がそのまま表示されます</strong>（投稿の作成日時は使われません）。空欄の場合は日時表示なし。
+        この投稿の一覧・詳細で表示される日時テキストです。<strong>ここに入力した内容がそのまま表示されます</strong>。<br>空欄の場合は WordPress の投稿日にフォールバックします。
     </p>
     <p>
         <label for="audubon_broadcast_sort"><strong>並び替え用の日付（任意）</strong></label><br>
@@ -311,14 +311,20 @@ function audubon_get_actor_latest_information( $actor_id = null ) {
 
 /**
  * ニュース投稿の表示日時。
- * フリーテキストで入力された値のみを返し、未入力なら空文字を返します。
- * （投稿の作成日へのフォールバックは行いません）
+ * 編集画面のフリーテキスト（_audubon_broadcast_text）が入っていればそれを使い、
+ * 未入力の場合は投稿の作成日にフォールバックします。
  *
- * 第2引数 $format は後方互換のために受け付けますが、フリーテキストに対しては適用されません。
+ * 第2引数 $format はフォールバック時の投稿日のフォーマット（省略時はWP設定の date_format）。
+ * フリーテキスト側にはフォーマットは適用しません（入力そのままを返します）。
  */
 function audubon_get_news_display_date( $post_id = null, $format = '' ) {
     $post_id = $post_id ?: get_the_ID();
-    return (string) get_post_meta( $post_id, '_audubon_broadcast_text', true );
+    $text    = (string) get_post_meta( $post_id, '_audubon_broadcast_text', true );
+    if ( $text !== '' ) {
+        return $text;
+    }
+    $format = $format ?: get_option( 'date_format' );
+    return get_the_date( $format, $post_id );
 }
 
 /**
