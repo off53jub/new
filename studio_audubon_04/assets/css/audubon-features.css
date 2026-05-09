@@ -610,7 +610,8 @@ body.audubon-splash-active {
  * 9. Information（ニュース）一覧の位置調整
  *    トップページで、見出し「Information」と本文の縦・横位置を整える。
  *    ・既存の flex（左右並び）をやめて、見出しの下に本文を配置
- *    ・本文を「Information」文字の中央あたりから左寄せで開始
+ *    ・本文の左端は「Information」の "F" の下あたりからスタート
+ *    ・本文の右端はコンテナいっぱいに使い、テキストが切れないように
  * ========================================================= */
 @media (min-width: 768px) {
     body.home #news .contents.news-area {
@@ -622,12 +623,19 @@ body.audubon-splash-active {
     }
     body.home #news .news-list-inner {
         padding: 0 0 5px;
-        margin-left: 6em; /* "Information" 文字のだいたい中央くらいの位置 */
+        margin-left: 2.5em; /* "Information" の "F" の下あたりの位置 */
+        margin-right: 0;
     }
+    /* 既存style.css の .news-list { max-width:600px; margin:0 auto 10px } を上書き */
     body.home #news .news-list {
-        margin-left: 0;
-        margin-right: auto;
-        max-width: 100%;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        max-width: none !important;
+        width: auto !important;
+    }
+    body.home #news .news-list p.news-title {
+        word-break: break-word;
+        overflow-wrap: anywhere;
     }
 }
 
