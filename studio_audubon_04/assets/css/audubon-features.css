@@ -497,6 +497,16 @@ body.audubon-splash-active {
     max-width: 100%;
     height: auto;
 }
+/* YouTube埋込のiframeは独自の固定サイズ(560×315等)を持つため、
+   .image-wrapper 内では強制的に幅100%に伸ばし、16:9比率で揃える。
+   これで左の画像と同じ幅で表示される。 */
+#pickup .image-wrapper iframe {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9;
+    border: 0;
+    display: block;
+}
 
 /* =========================================================
  * 8. 印刷スタイル（プロフィールをPDFで保存）
