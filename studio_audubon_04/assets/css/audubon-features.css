@@ -630,3 +630,89 @@ body.audubon-splash-active {
         max-width: 100%;
     }
 }
+
+/* =========================================================
+ * Information 3行構成（日付 / タイトル / 出演者）
+ *   - p.news-date    : 1行目（フリーテキスト日付）
+ *   - p.news-title   : 2行目（記事URLへのリンク）
+ *   - p.news-actors  : 3行目（出演アクターのリンク群）
+ * ========================================================= */
+.news-list { display: block; }
+.news-list p.news-date,
+.news-list p.news-title,
+.news-list p.news-actors {
+    display: block;
+    float: none;
+    width: auto;
+    margin: 0;
+    line-height: 1.55;
+}
+.news-list p.news-date {
+    font-size: 0.88rem;
+    color: #888;
+    margin-bottom: 4px;
+}
+.news-list p.news-title {
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+.news-list p.news-title a {
+    color: #222;
+    text-decoration: none;
+    font-weight: 600;
+}
+.news-list p.news-title a:hover { text-decoration: underline; }
+.news-list p.news-actors {
+    font-size: 0.85rem;
+    color: #555;
+}
+.news-list p.news-actors .news-actor-link {
+    color: #6c5a2a;
+    text-decoration: none;
+    border-bottom: 1px dotted #b9a76a;
+}
+.news-list p.news-actors .news-actor-link:hover {
+    color: #b9a76a;
+    border-bottom-color: #b9a76a;
+}
+.news-list { padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid #eee; }
+.news-list:last-child { border-bottom: 0; }
+
+/* =========================================================
+ * Works 4列グリッド（A4比率）
+ *   - PC: 1行4枚
+ *   - タブレット: 3枚
+ *   - スマホ: 1枚（既存）
+ * ========================================================= */
+@media (min-width: 1024px) {
+    body.page-template-default .works-inner {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+    }
+    body.page-template-default .works-inner > .image-wrapper { grid-column: 1 / -1; }
+    body.page-template-default .works-list {
+        width: 100% !important;
+        margin: 0 !important;
+        float: none !important;
+    }
+    body.page-template-default .works-list:not(:last-child) {
+        margin-right: 0 !important;
+    }
+}
+@media (min-width: 768px) and (max-width: 1023.98px) {
+    body.page-template-default .works-inner {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+    body.page-template-default .works-inner > .image-wrapper { grid-column: 1 / -1; }
+    body.page-template-default .works-list {
+        width: 100% !important;
+        margin: 0 !important;
+        float: none !important;
+    }
+    body.page-template-default .works-list:not(:last-child) {
+        margin-right: 0 !important;
+    }
+}

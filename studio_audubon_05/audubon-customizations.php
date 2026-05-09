@@ -970,3 +970,28 @@ add_filter( 'the_content', function ( $html ) {
         return '<img loading="lazy"' . $m[1] . '>';
     }, $html );
 }, 99 );
+
+/**
+ * ニュース記事に紐付くアクター名リンクを 1行で出力。
+ *  _audubon_related_actors（出演アクターのID配列）を参照。
+ *  Information の 3行構成（日付・タイトル・出演者）の3行目に使用。
+ */
+function audubon_render_news_actors_links( $post_id = null ) {
+    $post_id = $post_id ?: get_the_ID();
+    $actor_ids = get_post_meta( $post_id, '_audubon_related_actors', true );
+    if ( ! is_array( $actor_ids ) || empty( $actor_ids ) ) {
+        return;
+    }
+    $links = array();
+    foreach ( $actor_ids as $actor_id ) {
+        $actor = get_post( (int) $actor_id );
+        if ( ! $actor || $actor->post_status !== 'publish' ) continue;
+        $links[] = sprintf(
+            '<a href="%s" class="news-actor-link">%s</a>',
+            esc_url( get_permalink( $actor ) ),
+            esc_html( get_the_title( $actor ) )
+        );
+    }
+    if ( empty( $links ) ) return;
+    echo '<p class="news-actors">' . implode( ' / ', $links ) . '</p>';
+}

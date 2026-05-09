@@ -40,17 +40,22 @@ foreach ($posts as $post): // ループの開始
     setup_postdata($post); // 記事データの取得
     ?>
         <div class="news-list">
-          <a href="<?php the_permalink();?>">
-            <?php
-            $audubon_news_date = function_exists( 'audubon_get_news_display_date' )
-                ? audubon_get_news_display_date()
-                : '';
-            if ( $audubon_news_date !== '' ) :
-            ?>
-            <p class="news-date"><span><?php echo esc_html( $audubon_news_date ); ?></span></p>
-            <?php endif; ?>
-            <p class="news-title"><?php echo wp_trim_words(get_the_title(), 40, '...'); ?></p>
-          </a>
+          <?php
+          $audubon_news_date = function_exists( 'audubon_get_news_display_date' )
+              ? audubon_get_news_display_date()
+              : '';
+          if ( $audubon_news_date !== '' ) :
+          ?>
+          <p class="news-date"><span><?php echo esc_html( $audubon_news_date ); ?></span></p>
+          <?php endif; ?>
+          <p class="news-title">
+            <a href="<?php the_permalink();?>"><?php echo wp_trim_words(get_the_title(), 40, '...'); ?></a>
+          </p>
+          <?php
+          if ( function_exists( 'audubon_render_news_actors_links' ) ) {
+              audubon_render_news_actors_links();
+          }
+          ?>
         </div>
         <?php
 endforeach; // ループの終了

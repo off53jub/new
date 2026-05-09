@@ -30,6 +30,8 @@ $args = array(
     'post_type' => 'post',
     'category_name' => 'works',
     'posts_per_page' => 12, // 表示件数の指定
+    'orderby' => 'date',
+    'order'   => 'DESC', // 最新の作品を上に表示
 );
 $the_query = new WP_Query($args);
 if ($the_query->have_posts()): while ($the_query->have_posts()): $the_query->the_post();
