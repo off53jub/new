@@ -876,14 +876,15 @@ function audubon_render_news_actors_links( $post_id = null ) {
 
 
 /**
- * ヘッダー（およびフッター）ナビゲーションの "News" メニュー項目を "Info" に置き換え。
+ * ヘッダー（およびフッター）ナビゲーションの "News" メニュー項目を
+ * "Information" に置き換え。
  * 管理画面 > 外観 > メニュー の「Navigation Label」を直接書き換えなくても、
  * テーマ側で表示文字を上書きします。
  */
 add_filter( 'nav_menu_item_title', 'audubon_rename_news_to_info', 10, 2 );
 function audubon_rename_news_to_info( $title, $item ) {
     if ( strcasecmp( trim( $title ), 'News' ) === 0 ) {
-        return 'Info';
+        return 'Information';
     }
     return $title;
 }
