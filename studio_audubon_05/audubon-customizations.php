@@ -530,62 +530,10 @@ add_action( 'manage_actor_posts_custom_column', function ( $column, $post_id ) {
  * ============================================================= */
 
 /* -------------------------------------------------------------
- * A-1 / B-6: アクター絞り込み用タクソノミー
- *  - audubon_actor_gender   : 性別（男性/女性/その他）
- *  - audubon_actor_age      : 年代（10代-60代以上）
- *  - audubon_actor_genre    : ジャンル（俳優/声優/モデル/文化人 等）
- *  - audubon_actor_specialty: 得意分野（舞台/映画/TV/CM/朗読 等）
+ * （旧 A-1/B-6 アクター属性タクソノミー（性別 / 年代 / ジャンル /
+ *  得意分野）の登録は削除しました。アクター編集画面の右サイドバーに
+ *  あった分類用ボックスは表示されなくなります。
  * ------------------------------------------------------------- */
-add_action( 'init', 'audubon_register_actor_taxonomies' );
-function audubon_register_actor_taxonomies() {
-    if ( ! post_type_exists( 'actor' ) ) {
-        return;
-    }
-
-    $base = array(
-        'public'            => true,
-        'show_in_rest'      => true,
-        'show_admin_column' => true,
-        'hierarchical'      => true,
-        'show_in_menu'      => true,
-        'show_ui'           => true,
-    );
-
-    register_taxonomy( 'audubon_actor_gender', 'actor', array_merge( $base, array(
-        'label'        => '性別',
-        'rewrite'      => array( 'slug' => 'actor-gender' ),
-    ) ) );
-    register_taxonomy( 'audubon_actor_age', 'actor', array_merge( $base, array(
-        'label'   => '年代',
-        'rewrite' => array( 'slug' => 'actor-age' ),
-    ) ) );
-    register_taxonomy( 'audubon_actor_genre', 'actor', array_merge( $base, array(
-        'label'   => 'ジャンル',
-        'rewrite' => array( 'slug' => 'actor-genre' ),
-    ) ) );
-    register_taxonomy( 'audubon_actor_specialty', 'actor', array_merge( $base, array(
-        'label'   => '得意分野',
-        'rewrite' => array( 'slug' => 'actor-specialty' ),
-    ) ) );
-
-    // 初期ターム（存在しない場合のみ追加）
-    audubon_seed_terms( 'audubon_actor_gender',    array( '男性', '女性', 'その他' ) );
-    audubon_seed_terms( 'audubon_actor_age',       array( '10代', '20代', '30代', '40代', '50代', '60代以上' ) );
-    audubon_seed_terms( 'audubon_actor_genre',     array( '俳優', '声優', 'モデル', '文化人', 'タレント', 'その他' ) );
-    audubon_seed_terms( 'audubon_actor_specialty', array( '舞台', '映画', 'テレビ', 'CM', '朗読', '吹替', 'ナレーション' ) );
-}
-
-function audubon_seed_terms( $taxonomy, $names ) {
-    if ( get_option( 'audubon_seeded_' . $taxonomy ) ) {
-        return;
-    }
-    foreach ( $names as $name ) {
-        if ( ! term_exists( $name, $taxonomy ) ) {
-            wp_insert_term( $name, $taxonomy );
-        }
-    }
-    update_option( 'audubon_seeded_' . $taxonomy, '1' );
-}
 
 /* -------------------------------------------------------------
  * （旧 A-1 アクター絞り込みUI / pre_get_posts は削除しました。

@@ -52,11 +52,6 @@ if ($the_query->have_posts()): while ($the_query->have_posts()): $the_query->the
 	          <p class="news-title">
 	            <a href="<?php the_permalink();?>"><?php echo wp_trim_words(get_the_title(), 40, '...'); ?></a>
 	          </p>
-	          <?php
-	          if ( function_exists( 'audubon_render_news_actors_links' ) ) {
-	              audubon_render_news_actors_links();
-	          }
-	          ?>
 	        </div>
 	        <?php endwhile;else: ?>
 	      </div>

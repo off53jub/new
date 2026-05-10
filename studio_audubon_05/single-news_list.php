@@ -51,7 +51,41 @@ get_header();
             <?php the_category();?>
           </div>
 
-          <div class="single-text"><?php the_content();?></div>
+          <div class="single-text">
+            <?php
+            // 本文が入っていればそのまま表示（既存運用は維持）。
+            // 空の場合のみ、表示日時 + 出演アクターから最低限の内容を自動生成。
+            $audubon_post_content = trim( strip_tags( get_the_content() ) );
+            if ( $audubon_post_content !== '' ) :
+                the_content();
+            else :
+                $audubon_actor_ids = get_post_meta( get_the_ID(), '_audubon_related_actors', true );
+                $audubon_actor_links = array();
+                if ( is_array( $audubon_actor_ids ) ) {
+                    foreach ( $audubon_actor_ids as $aid ) {
+                        $a = get_post( (int) $aid );
+                        if ( ! $a || $a->post_status !== 'publish' ) continue;
+                        $audubon_actor_links[] = sprintf(
+                            '<a href="%s">%s</a>',
+                            esc_url( get_permalink( $a ) ),
+                            esc_html( get_the_title( $a ) )
+                        );
+                    }
+                }
+                ?>
+                <p>
+                    <?php if ( $audubon_news_date !== '' ) : ?>
+                        <strong>日時：</strong><?php echo esc_html( $audubon_news_date ); ?><br>
+                    <?php endif; ?>
+                    <?php if ( ! empty( $audubon_actor_links ) ) : ?>
+                        <strong>出演：</strong><?php echo implode( ' / ', $audubon_actor_links ); ?>
+                    <?php endif; ?>
+                </p>
+                <p style="color:#777;">詳細は近日公開予定です。</p>
+                <?php
+            endif;
+            ?>
+          </div>
 
           <div class="previous-next">
             <div class="page-previous">

@@ -51,11 +51,6 @@ foreach ($posts as $post): // ループの開始
           <p class="news-title">
             <a href="<?php the_permalink();?>"><?php echo wp_trim_words(get_the_title(), 40, '...'); ?></a>
           </p>
-          <?php
-          if ( function_exists( 'audubon_render_news_actors_links' ) ) {
-              audubon_render_news_actors_links();
-          }
-          ?>
         </div>
         <?php
 endforeach; // ループの終了
