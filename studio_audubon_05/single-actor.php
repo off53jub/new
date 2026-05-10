@@ -140,11 +140,6 @@ Template Post Type: actor
           <?php if ( function_exists( 'audubon_render_actor_links' ) ) : ?>
           <div class="col-xl-12 mt-3 mb-3">
               <?php audubon_render_actor_links(); ?>
-              <?php if ( function_exists( 'audubon_render_actor_inquiry_button' ) ) : ?>
-                  <div class="audubon-actor-links" style="margin-top:0;">
-                      <?php audubon_render_actor_inquiry_button(); ?>
-                  </div>
-              <?php endif; ?>
           </div>
           <?php endif; ?>
         </div>

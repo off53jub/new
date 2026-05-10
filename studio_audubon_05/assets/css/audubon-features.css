@@ -639,67 +639,7 @@ body.audubon-splash-active {
     }
 }
 
-/* =========================================================
- * 10. アクター絞り込みフィルター（A-1）
- * ========================================================= */
-.audubon-actor-filter {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px 18px;
-    align-items: flex-end;
-    padding: 16px 18px;
-    background: #f7f5ee;
-    border: 1px solid #e6e0c8;
-    border-radius: 4px;
-    margin: 0 0 24px;
-    font-size: 0.92rem;
-}
-.audubon-actor-filter__field {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    min-width: 130px;
-    flex: 1 1 130px;
-}
-.audubon-actor-filter__label {
-    font-size: 0.78rem;
-    color: #6c5a2a;
-    letter-spacing: 0.06em;
-}
-.audubon-actor-filter select {
-    height: 36px;
-    padding: 4px 8px;
-    background: #fff;
-    border: 1px solid #d0c8a8;
-    border-radius: 3px;
-    font-size: 0.92rem;
-    box-sizing: border-box;
-}
-.audubon-actor-filter__submit,
-.audubon-actor-filter__reset {
-    height: 36px;
-    padding: 0 18px;
-    border-radius: 3px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    box-sizing: border-box;
-    line-height: 36px;
-    text-align: center;
-}
-.audubon-actor-filter__submit {
-    background: #b9a76a;
-    color: #fff;
-    border: 0;
-    font-weight: 600;
-}
-.audubon-actor-filter__submit:hover { background: #a59054; }
-.audubon-actor-filter__reset {
-    background: transparent;
-    color: #6c5a2a;
-    border: 1px solid #d0c8a8;
-    text-decoration: none;
-}
-.audubon-actor-filter__reset:hover { background: #fff; }
+/* （旧 セクション 10 アクター絞り込みフィルター / 12 お問い合わせCTA は削除しました） */
 
 /* =========================================================
  * 11. 構造化された出演実績（A-3）
@@ -745,34 +685,6 @@ body.audubon-splash-active {
 .audubon-credits-display__director {
     font-size: 0.85rem;
     color: #777;
-}
-
-/* =========================================================
- * 12. お問い合わせCTA（A-4）
- * ========================================================= */
-.audubon-actor-links__inquiry {
-    flex: 1 1 240px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 14px 18px;
-    border: 1px solid #b9a76a;
-    border-radius: 6px;
-    color: #fff;
-    background: #b9a76a;
-    text-decoration: none;
-    transition: background 0.2s, border-color 0.2s, color 0.2s;
-    font-weight: 600;
-}
-.audubon-actor-links__inquiry:hover {
-    background: #a59054;
-    border-color: #a59054;
-    color: #fff;
-    text-decoration: none;
-}
-.audubon-actor-links__inquiry .audubon-actor-links__label {
-    color: #fff;
-    opacity: 0.85;
 }
 
 /* =========================================================

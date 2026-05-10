@@ -25,12 +25,6 @@
 		</article>
 		<article>
 			<div class="contents actors-area">
-				<?php
-				// 絞り込みUI
-				if ( function_exists( 'audubon_actor_filter_shortcode' ) ) {
-					echo audubon_actor_filter_shortcode();
-				}
-				?>
 				<div class="actors-inner">
 			        <ul>
 			        	<?php
@@ -40,23 +34,6 @@
 				            'orderby' => 'menu_order',
 				            'order' => 'ASC',
 				          );
-				          // 絞り込み条件をクエリに反映
-				          $tax_query = array();
-				          foreach ( array( 'audubon_actor_gender', 'audubon_actor_age', 'audubon_actor_genre', 'audubon_actor_specialty' ) as $tax ) {
-				              if ( ! empty( $_GET[ $tax ] ) ) {
-				                  $tax_query[] = array(
-				                      'taxonomy' => $tax,
-				                      'field'    => 'slug',
-				                      'terms'    => sanitize_text_field( wp_unslash( $_GET[ $tax ] ) ),
-				                  );
-				              }
-				          }
-				          if ( count( $tax_query ) > 1 ) {
-				              $tax_query['relation'] = 'AND';
-				          }
-				          if ( ! empty( $tax_query ) ) {
-				              $args['tax_query'] = $tax_query;
-				          }
 				          $films = new WP_Query( $args );
 				            $postnum = 0;
 				            if ( $films->have_posts() ) :
@@ -76,11 +53,7 @@
 				        </li>
 				        <?php
 				          endwhile;
-				          else: ?>
-				          <li class="audubon-actor-list__empty" style="grid-column:1/-1;text-align:center;padding:40px 0;color:#666;">
-				              該当するアクターが見つかりませんでした。
-				          </li>
-				        <?php endif;
+				          endif;
 				          wp_reset_query()
 				        ?>
 					</ul>

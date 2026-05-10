@@ -587,77 +587,11 @@ function audubon_seed_terms( $taxonomy, $names ) {
     update_option( 'audubon_seeded_' . $taxonomy, '1' );
 }
 
-/**
- * アクター絞り込み フィルターUIをショートコードで提供
- *   [audubon_actor_filter]
- */
-add_shortcode( 'audubon_actor_filter', 'audubon_actor_filter_shortcode' );
-function audubon_actor_filter_shortcode() {
-    $taxonomies = array(
-        'audubon_actor_gender'    => '性別',
-        'audubon_actor_age'       => '年代',
-        'audubon_actor_genre'     => 'ジャンル',
-        'audubon_actor_specialty' => '得意分野',
-    );
-
-    ob_start();
-    ?>
-    <form class="audubon-actor-filter" method="get">
-        <?php foreach ( $taxonomies as $tax => $label ) :
-            $terms = get_terms( array(
-                'taxonomy'   => $tax,
-                'hide_empty' => false,
-            ) );
-            if ( empty( $terms ) || is_wp_error( $terms ) ) continue;
-            $current = isset( $_GET[ $tax ] ) ? sanitize_text_field( wp_unslash( $_GET[ $tax ] ) ) : '';
-            ?>
-            <label class="audubon-actor-filter__field">
-                <span class="audubon-actor-filter__label"><?php echo esc_html( $label ); ?></span>
-                <select name="<?php echo esc_attr( $tax ); ?>">
-                    <option value="">すべて</option>
-                    <?php foreach ( $terms as $term ) : ?>
-                        <option value="<?php echo esc_attr( $term->slug ); ?>" <?php selected( $current, $term->slug ); ?>>
-                            <?php echo esc_html( $term->name ); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </label>
-        <?php endforeach; ?>
-        <button type="submit" class="audubon-actor-filter__submit">絞り込む</button>
-        <a class="audubon-actor-filter__reset" href="<?php echo esc_url( strtok( $_SERVER['REQUEST_URI'] ?? '/', '?' ) ); ?>">リセット</a>
-    </form>
-    <?php
-    return ob_get_clean();
-}
-
-/**
- * 絞り込みクエリ変数を main query に反映（page-actor.php / page-actor-parent.php 用）
- */
-add_action( 'pre_get_posts', 'audubon_apply_actor_filter_query' );
-function audubon_apply_actor_filter_query( $query ) {
-    if ( is_admin() || ! $query->is_main_query() ) {
-        return;
-    }
-    if ( $query->get( 'post_type' ) !== 'actor' ) {
-        return;
-    }
-    $tax_query = array();
-    foreach ( array( 'audubon_actor_gender', 'audubon_actor_age', 'audubon_actor_genre', 'audubon_actor_specialty' ) as $tax ) {
-        if ( ! empty( $_GET[ $tax ] ) ) {
-            $tax_query[] = array(
-                'taxonomy' => $tax,
-                'field'    => 'slug',
-                'terms'    => sanitize_text_field( wp_unslash( $_GET[ $tax ] ) ),
-            );
-        }
-    }
-    if ( count( $tax_query ) > 1 ) {
-        $tax_query['relation'] = 'AND';
-    }
-    if ( ! empty( $tax_query ) ) {
-        $query->set( 'tax_query', $tax_query );
-    }
-}
+/* -------------------------------------------------------------
+ * （旧 A-1 アクター絞り込みUI / pre_get_posts は削除しました。
+ *   タクソノミー定義は残しているため、管理画面でのアクター分類は
+ *   引き続き使用可能です。フロントの絞り込みフォームは出力されません）
+ * ------------------------------------------------------------- */
 
 /* -------------------------------------------------------------
  * A-3: 出演実績の構造化メタボックス
@@ -838,21 +772,8 @@ function audubon_render_actor_credits( $actor_id = null ) {
 }
 
 /* -------------------------------------------------------------
- * A-4: アクター詳細「お問い合わせ」CTA
- * audubon_render_actor_links() を拡張 — Contact ページへリンク
+ * （旧 A-4 アクター詳細「お問い合わせ」CTA は削除しました）
  * ------------------------------------------------------------- */
-function audubon_render_actor_inquiry_button( $actor_id = null ) {
-    $actor_id   = $actor_id ?: get_the_ID();
-    $actor_name = get_the_title( $actor_id );
-    $contact_url = home_url( '/contact/' );
-    $url = add_query_arg( 'actor', rawurlencode( $actor_name ), $contact_url );
-    ?>
-    <a class="audubon-actor-links__inquiry" href="<?php echo esc_url( $url ); ?>">
-        <span class="audubon-actor-links__label">CASTING</span>
-        <span class="audubon-actor-links__title"><?php echo esc_html( $actor_name ); ?>についてお問い合わせ</span>
-    </a>
-    <?php
-}
 
 /* -------------------------------------------------------------
  * B-2: Pickup を動的化（CPT: audubon_pickup）
