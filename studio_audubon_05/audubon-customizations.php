@@ -205,12 +205,17 @@ function audubon_render_slide_meta_box( $post ) {
     </p>
 
     <p style="margin:0 0 6px;">
-        <label for="audubon_slide_link"><strong>「詳しくはこちらから」のリンク先URL</strong></label>
+    <p style="margin:0 0 6px;">
+        <label for="audubon_slide_link"><strong>「詳細はコチラ」ボタンのリンク先URL</strong></label>
     </p>
     <p style="margin:0;">
         <input type="url" id="audubon_slide_link" name="audubon_slide_link"
-               value="<?php echo esc_attr( $link ); ?>" style="width:100%;" placeholder="https://...">
-        <span class="description">空欄の場合は「詳しくはこちらから」ボタンを表示しません。</span>
+               value="<?php echo esc_attr( $link ); ?>" style="width:100%;" placeholder="https://studio-audubon.jp/news_list/xxxxx">
+        <span class="description">
+            カードの「詳細はコチラ」ボタンを押したときに開くURLです。<br>
+            例: 該当のニュース記事ページのURL（<code>https://studio-audubon.jp/news_list/...</code>）<br>
+            空欄の場合は、このスライド投稿自身のページに自動でリンクします。
+        </span>
     </p>
     <?php
 }
