@@ -20,7 +20,7 @@
 	    <div class="contents news-area-column">
 	      <?php
 	      // クエリ文字列 ?actor=ID でアクター絞り込み（v06）
-	      $audubon_filter_actor_id   = isset( $_GET['actor'] ) ? absint( $_GET['actor'] ) : 0;
+	      $audubon_filter_actor_id   = isset( $_GET['news_actor'] ) ? absint( $_GET['news_actor'] ) : 0;
 	      $audubon_filter_actor_name = '';
 	      if ( $audubon_filter_actor_id ) {
 	          $a = get_post( $audubon_filter_actor_id );
@@ -112,7 +112,7 @@ if ($the_query->max_num_pages > 1) {
     );
     // アクター絞り込み中はクエリ文字列を維持
     if ( $audubon_filter_actor_id ) {
-        $pagination_args['add_args'] = array( 'actor' => $audubon_filter_actor_id );
+        $pagination_args['add_args'] = array( 'news_actor' => $audubon_filter_actor_id );
     }
     echo paginate_links( $pagination_args );
 }

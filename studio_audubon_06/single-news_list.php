@@ -97,7 +97,7 @@ get_header();
               foreach ( $audubon_actor_ids as $aid ) {
                   $a = get_post( (int) $aid );
                   if ( ! $a || $a->post_status !== 'publish' ) continue;
-                  $url = add_query_arg( 'actor', (int) $aid, home_url( '/news/' ) );
+                  $url = add_query_arg( 'news_actor', (int) $aid, home_url( '/news/' ) );
                   $tag_links[] = sprintf(
                       '<a class="audubon-news-tag" href="%s">#%s</a>',
                       esc_url( $url ),
