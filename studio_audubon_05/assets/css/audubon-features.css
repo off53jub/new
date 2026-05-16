@@ -889,3 +889,58 @@ body.audubon-splash-active {
         margin-right: 0 !important;
     }
 }
+
+/* =========================================================
+ * v06: ニュース本文下の出演アクタータグ + アクター絞り込み戻りリンク
+ * ========================================================= */
+
+/* 単体ニュースページの本文の下に置くタグ群 */
+.audubon-news-tags {
+    margin: 24px 0 16px;
+    padding: 14px 18px;
+    border-top: 1px solid #eee;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    font-size: 0.92rem;
+}
+.audubon-news-tags__label {
+    color: #777;
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    margin-right: 4px;
+}
+.audubon-news-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    background: #f4efe4;
+    color: #4B0000;
+    border: 1px solid #e0d3b0;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.audubon-news-tag:hover {
+    background: #4B0000;
+    color: #fff;
+    border-color: #4B0000;
+    text-decoration: none;
+}
+
+/* アクター絞り込み中の戻りリンク（Information一覧の上） */
+.audubon-news-filter-back {
+    margin: -8px 0 16px;
+    font-size: 0.9rem;
+}
+.audubon-news-filter-back a {
+    color: #4B0000;
+    text-decoration: none;
+    border-bottom: 1px dotted #4B0000;
+}
+.audubon-news-filter-back a:hover {
+    text-decoration: none;
+    color: #800;
+}
