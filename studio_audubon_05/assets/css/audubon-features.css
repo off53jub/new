@@ -853,39 +853,28 @@ body.audubon-splash-active {
 
 /* =========================================================
  * Works 4列グリッド（A4比率）
- *   - PC: 1行4枚
- *   - タブレット: 3枚
+ *   - PC・タブレット: 1行4枚
  *   - スマホ: 1枚（既存）
+ *   - /works/ ページ と トップページ Works セクション の両方に適用
  * ========================================================= */
-@media (min-width: 1024px) {
-    body.page-template-default .works-inner {
+@media (min-width: 768px) {
+    body.page-template-default .works-inner,
+    body.home .works-inner {
         display: grid !important;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 24px;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 24px !important;
     }
-    body.page-template-default .works-inner > .image-wrapper { grid-column: 1 / -1; }
-    body.page-template-default .works-list {
+    body.page-template-default .works-inner > .image-wrapper,
+    body.home .works-inner > .image-wrapper { grid-column: 1 / -1; }
+    body.page-template-default .works-list,
+    body.home .works-list {
         width: 100% !important;
+        max-width: 100% !important;
         margin: 0 !important;
         float: none !important;
     }
-    body.page-template-default .works-list:not(:last-child) {
-        margin-right: 0 !important;
-    }
-}
-@media (min-width: 768px) and (max-width: 1023.98px) {
-    body.page-template-default .works-inner {
-        display: grid !important;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
-    }
-    body.page-template-default .works-inner > .image-wrapper { grid-column: 1 / -1; }
-    body.page-template-default .works-list {
-        width: 100% !important;
-        margin: 0 !important;
-        float: none !important;
-    }
-    body.page-template-default .works-list:not(:last-child) {
+    body.page-template-default .works-list:not(:last-child),
+    body.home .works-list:not(:last-child) {
         margin-right: 0 !important;
     }
 }
