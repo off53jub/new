@@ -77,16 +77,9 @@ if ( $audubon_filter_actor_id ) {
     $args['orderby']  = 'date';
     $args['order']    = 'DESC';
 } else {
-    // 通常時は broadcast_sort の有無で並べ替え
-    $args['meta_query'] = array(
-        'relation'     => 'OR',
-        'with_sort'    => array( 'key' => '_audubon_broadcast_sort', 'compare' => 'EXISTS' ),
-        'without_sort' => array( 'key' => '_audubon_broadcast_sort', 'compare' => 'NOT EXISTS' ),
-    );
-    $args['orderby'] = array(
-        'with_sort' => 'DESC',
-        'date'      => 'DESC',
-    );
+    // 通常時はシンプルに投稿日 DESC（最新が上）
+    $args['orderby'] = 'date';
+    $args['order']   = 'DESC';
 }
 $the_query = new WP_Query($args);
 if ($the_query->have_posts()): while ($the_query->have_posts()): $the_query->the_post();
