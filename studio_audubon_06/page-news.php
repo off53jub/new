@@ -49,36 +49,43 @@ $args = array(
     'paged' => $paged,
     'post_type' => 'news_list',
     'posts_per_page' => 10, // 表示件数の指定
-    // 並び替え用日付（_audubon_broadcast_sort）が設定されていればそれを優先、無ければ投稿日。
-    'meta_query' => array(
-        'relation'     => 'AND',
-        'sort_group'   => array(
-            'relation'     => 'OR',
-            'with_sort'    => array( 'key' => '_audubon_broadcast_sort', 'compare' => 'EXISTS' ),
-            'without_sort' => array( 'key' => '_audubon_broadcast_sort', 'compare' => 'NOT EXISTS' ),
-        ),
-    ),
-    'orderby' => array(
+);
+
+if ( $audubon_filter_actor_id ) {
+    // アクター絞り込み: シリアライズデータへの LIKE は形式差で動かないことがあるため、
+    // 全 news_list を取得して PHP 側でフィルタ → post__in でクエリに渡す（確実）。
+    $all_news = get_posts( array(
+        'post_type'      => 'news_list',
+        'posts_per_page' => -1,
+        'post_status'    => 'publish',
+        'fields'         => 'ids',
+    ) );
+    $matched_ids = array();
+    foreach ( $all_news as $nid ) {
+        $rel = get_post_meta( $nid, '_audubon_related_actors', true );
+        if ( ! is_array( $rel ) ) continue;
+        // 数値・文字列どちらの保存形式でも比較できるようにキャスト
+        $rel_ints = array_map( 'intval', $rel );
+        if ( in_array( $audubon_filter_actor_id, $rel_ints, true ) ) {
+            $matched_ids[] = $nid;
+        }
+    }
+    if ( empty( $matched_ids ) ) {
+        $matched_ids = array( 0 ); // 該当なし → 空クエリを保証
+    }
+    $args['post__in'] = $matched_ids;
+    $args['orderby']  = 'date';
+    $args['order']    = 'DESC';
+} else {
+    // 通常時は broadcast_sort の有無で並べ替え
+    $args['meta_query'] = array(
+        'relation'     => 'OR',
+        'with_sort'    => array( 'key' => '_audubon_broadcast_sort', 'compare' => 'EXISTS' ),
+        'without_sort' => array( 'key' => '_audubon_broadcast_sort', 'compare' => 'NOT EXISTS' ),
+    );
+    $args['orderby'] = array(
         'with_sort' => 'DESC',
         'date'      => 'DESC',
-    ),
-);
-// アクター絞り込み: _audubon_related_actors に該当IDが含まれる記事だけに。
-// 保存形式が integer の場合は ;i:12;、string の場合は :"12"; とシリアライズされるため、
-// 両方を OR でカバー。
-if ( $audubon_filter_actor_id ) {
-    $args['meta_query'][] = array(
-        'relation' => 'OR',
-        array(
-            'key'     => '_audubon_related_actors',
-            'value'   => sprintf( ';i:%d;', $audubon_filter_actor_id ),
-            'compare' => 'LIKE',
-        ),
-        array(
-            'key'     => '_audubon_related_actors',
-            'value'   => sprintf( ':"%d";', $audubon_filter_actor_id ),
-            'compare' => 'LIKE',
-        ),
     );
 }
 $the_query = new WP_Query($args);
