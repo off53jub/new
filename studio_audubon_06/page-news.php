@@ -63,12 +63,22 @@ $args = array(
         'date'      => 'DESC',
     ),
 );
-// アクター絞り込み: _audubon_related_actors に該当IDが含まれる記事だけに
+// アクター絞り込み: _audubon_related_actors に該当IDが含まれる記事だけに。
+// 保存形式が integer の場合は ;i:12;、string の場合は :"12"; とシリアライズされるため、
+// 両方を OR でカバー。
 if ( $audubon_filter_actor_id ) {
     $args['meta_query'][] = array(
-        'key'     => '_audubon_related_actors',
-        'value'   => sprintf( ':"%d";', $audubon_filter_actor_id ),
-        'compare' => 'LIKE',
+        'relation' => 'OR',
+        array(
+            'key'     => '_audubon_related_actors',
+            'value'   => sprintf( ';i:%d;', $audubon_filter_actor_id ),
+            'compare' => 'LIKE',
+        ),
+        array(
+            'key'     => '_audubon_related_actors',
+            'value'   => sprintf( ':"%d";', $audubon_filter_actor_id ),
+            'compare' => 'LIKE',
+        ),
     );
 }
 $the_query = new WP_Query($args);
