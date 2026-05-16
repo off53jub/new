@@ -26,6 +26,17 @@ if ( ! defined( 'AUDUBON_FEATURES_VERSION' ) ) {
  * 1. CSS / JS
  * ============================================================= */
 
+/**
+ * 既存の slides CPT に page-attributes（標準の "Order" 入力欄）サポートを後付け。
+ * これでスライド編集画面の右サイドバーに "Page Attributes" メタボックスが出ます。
+ * ※メインの表示順入力欄はカスタムメタボックス側にも設けています（より目立つ位置）。
+ */
+add_action( 'init', function () {
+    if ( post_type_exists( 'slides' ) ) {
+        add_post_type_support( 'slides', 'page-attributes' );
+    }
+}, 20 );
+
 add_action( 'wp_enqueue_scripts', 'audubon_features_enqueue', 20 );
 function audubon_features_enqueue() {
     $base = get_template_directory_uri();
@@ -158,6 +169,7 @@ function audubon_render_slide_meta_box( $post ) {
     $heading     = get_post_meta( $post->ID, '_audubon_slide_heading', true );
     $actor_name  = get_post_meta( $post->ID, '_audubon_slide_actor_name', true );
     $description = get_post_meta( $post->ID, '_audubon_slide_description', true );
+    $order       = (int) $post->menu_order; // 表示順は wp_posts.menu_order に保存
     $link        = get_post_meta( $post->ID, '_audubon_slide_link', true );
     // 旧テーマ（03）の caption が入っている場合は actor_name のフォールバックとして使う
     $legacy_caption = get_post_meta( $post->ID, '_audubon_slide_caption', true );
@@ -173,6 +185,20 @@ function audubon_render_slide_meta_box( $post ) {
         トップページの <strong>TOPICSスライダー</strong> に表示される情報です。<br>
         アイキャッチ画像（左側）+ ヘッダー / 出演者名 / 本文 / リンクボタン で1枚のカードとして表示されます。
     </p>
+
+    <p style="margin:0 0 6px;">
+        <label for="audubon_slide_order"><strong>表示順</strong>（数字が小さいほど先に表示されます）</label>
+    </p>
+    <p style="margin:0 0 14px;">
+        <input type="number" id="audubon_slide_order" name="audubon_slide_order"
+               value="<?php echo esc_attr( $order ); ?>" min="0" step="1"
+               style="width:120px;font-size:16px;padding:7px 10px;text-align:right;">
+        <span class="description" style="margin-left:8px;">
+            例: 1, 2, 3...（同じ数字の場合は新しい投稿が先）。空欄/0 だと末尾に並びます。
+        </span>
+    </p>
+
+    <hr style="margin:14px 0;">
 
     <p style="margin:0 0 6px;">
         <label for="audubon_slide_heading"><strong>カードヘッダー</strong>（例: 出演情報 / お知らせ / リリース 等）</label>
@@ -266,6 +292,20 @@ function audubon_save_meta_boxes( $post_id, $post ) {
             isset( $_POST['audubon_slide_description'] ) ? sanitize_textarea_field( wp_unslash( $_POST['audubon_slide_description'] ) ) : '' );
         update_post_meta( $post_id, '_audubon_slide_link',
             isset( $_POST['audubon_slide_link'] ) ? esc_url_raw( wp_unslash( $_POST['audubon_slide_link'] ) ) : '' );
+
+        // 表示順は wp_posts.menu_order に保存。save_post の中で wp_update_post を
+        // 呼ぶと再帰するので、フックを一度外してから戻す。
+        if ( isset( $_POST['audubon_slide_order'] ) ) {
+            $order = absint( wp_unslash( $_POST['audubon_slide_order'] ) );
+            if ( (int) $post->menu_order !== $order ) {
+                remove_action( 'save_post', 'audubon_save_meta_boxes', 10 );
+                wp_update_post( array(
+                    'ID'         => $post_id,
+                    'menu_order' => $order,
+                ) );
+                add_action( 'save_post', 'audubon_save_meta_boxes', 10, 2 );
+            }
+        }
     }
 }
 
@@ -488,13 +528,34 @@ add_filter( 'manage_slides_posts_columns', function ( $columns ) {
     foreach ( $columns as $key => $label ) {
         $new[ $key ] = $label;
         if ( $key === 'title' ) {
+            $new['audubon_slide_order']   = '表示順';
             $new['audubon_slide_heading'] = 'ヘッダー';
             $new['audubon_slide_actor']   = '出演者・タイトル';
         }
     }
     return $new;
 } );
+
+// 表示順カラムをソート可能に
+add_filter( 'manage_edit-slides_sortable_columns', function ( $columns ) {
+    $columns['audubon_slide_order'] = 'menu_order';
+    return $columns;
+} );
+
+// 一覧画面のデフォルト並びを表示順に
+add_action( 'pre_get_posts', function ( $query ) {
+    if ( ! is_admin() || ! $query->is_main_query() ) return;
+    if ( $query->get( 'post_type' ) === 'slides' && ! $query->get( 'orderby' ) ) {
+        $query->set( 'orderby', 'menu_order' );
+        $query->set( 'order', 'ASC' );
+    }
+} );
+
 add_action( 'manage_slides_posts_custom_column', function ( $column, $post_id ) {
+    if ( $column === 'audubon_slide_order' ) {
+        $p = get_post( $post_id );
+        echo esc_html( (int) ( $p ? $p->menu_order : 0 ) );
+    }
     if ( $column === 'audubon_slide_heading' ) {
         echo esc_html( get_post_meta( $post_id, '_audubon_slide_heading', true ) );
     }
