@@ -336,18 +336,9 @@ function audubon_get_actor_latest_information( $actor_id = null ) {
         'meta_query'     => array(
             'relation' => 'AND',
             array(
-                // 保存形式が integer の場合（;i:12;）と string の場合（:"12";）の両対応
-                'relation' => 'OR',
-                array(
-                    'key'     => '_audubon_related_actors',
-                    'value'   => sprintf( ';i:%d;', $actor_id ),
-                    'compare' => 'LIKE',
-                ),
-                array(
-                    'key'     => '_audubon_related_actors',
-                    'value'   => sprintf( ':"%d";', $actor_id ),
-                    'compare' => 'LIKE',
-                ),
+                'key'     => '_audubon_related_actors',
+                'value'   => sprintf( ':"%d";', $actor_id ),
+                'compare' => 'LIKE',
             ),
             array(
                 'relation'     => 'OR',

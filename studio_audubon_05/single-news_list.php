@@ -87,34 +87,6 @@ get_header();
             ?>
           </div>
 
-          <?php
-          // 出演アクターをタグとして本文の下に並べる。
-          // タグをクリックすると /news/?actor=ID にジャンプし、
-          // そのアクターに関係する news_list 記事だけが一覧表示される。
-          $audubon_actor_ids = get_post_meta( get_the_ID(), '_audubon_related_actors', true );
-          if ( is_array( $audubon_actor_ids ) && ! empty( $audubon_actor_ids ) ) :
-              $tag_links = array();
-              foreach ( $audubon_actor_ids as $aid ) {
-                  $a = get_post( (int) $aid );
-                  if ( ! $a || $a->post_status !== 'publish' ) continue;
-                  $url = add_query_arg( 'news_actor', (int) $aid, home_url( '/news/' ) );
-                  $tag_links[] = sprintf(
-                      '<a class="audubon-news-tag" href="%s">#%s</a>',
-                      esc_url( $url ),
-                      esc_html( get_the_title( $a ) )
-                  );
-              }
-              if ( ! empty( $tag_links ) ) :
-          ?>
-          <div class="audubon-news-tags">
-              <span class="audubon-news-tags__label">出演アクター</span>
-              <?php echo implode( ' ', $tag_links ); ?>
-          </div>
-          <?php
-              endif;
-          endif;
-          ?>
-
           <div class="previous-next">
             <div class="page-previous">
               <p><?php previous_post_link('%link', '&lt;&nbsp;前の記事');?></p>

@@ -22,9 +22,18 @@
         <?php
 $args = array(
     'posts_per_page' => 10, // 表示件数の指定（Information ホームページ表示）
-    'post_type'      => 'news_list',
-    'orderby'        => 'date',
-    'order'          => 'DESC', // 最新の投稿が上
+    'post_type' => 'news_list',
+    // 並び替え用日付（_audubon_broadcast_sort）が設定されていればそれを優先、無ければ投稿日。
+    // OR + EXISTS / NOT EXISTS にしないと「メタが無い既存投稿」が除外されてしまうので注意。
+    'meta_query' => array(
+        'relation'     => 'OR',
+        'with_sort'    => array( 'key' => '_audubon_broadcast_sort', 'compare' => 'EXISTS' ),
+        'without_sort' => array( 'key' => '_audubon_broadcast_sort', 'compare' => 'NOT EXISTS' ),
+    ),
+    'orderby' => array(
+        'with_sort' => 'DESC',
+        'date'      => 'DESC',
+    ),
 );
 $posts = get_posts($args);
 foreach ($posts as $post): // ループの開始
