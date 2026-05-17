@@ -909,3 +909,39 @@ body.audubon-splash-active {
     margin-top: 6px;
     font-size: 0.85rem;
 }
+
+/* アクター一覧 (/actor/) のスマホ表示を2列グリッドに */
+@media (max-width: 767px) {
+    .actors-inner ul {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 16px 12px !important;
+        justify-content: stretch !important;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+    .actors-inner li {
+        width: 100% !important;
+        margin: 0 !important;
+        list-style: none;
+    }
+    /* サムネ高さは固定の 275px をやめてA4比率に */
+    .actors-inner .thumbnail {
+        width: 100%;
+        height: auto !important;
+        aspect-ratio: 210 / 297;
+        overflow: hidden;
+    }
+    .actors-inner .thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .actors-inner .title {
+        font-size: 0.85rem;
+        line-height: 1.4;
+        margin-top: 8px;
+        text-align: center;
+    }
+}
