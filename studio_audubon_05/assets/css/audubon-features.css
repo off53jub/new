@@ -945,3 +945,21 @@ body.audubon-splash-active {
         text-align: center;
     }
 }
+
+/* Information タイトル: 1行で表示し、線幅を超えたら "..." で省略 */
+.news-list p.news-title {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    max-width: 100%;
+}
+.news-list p.news-title a {
+    display: inline-block;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: top;
+}

@@ -41,7 +41,7 @@ if ($the_query->have_posts()): while ($the_query->have_posts()): $the_query->the
 	          <p class="news-date"><span><?php echo esc_html( $audubon_news_date ); ?></span></p>
 	          <?php endif; ?>
 	          <p class="news-title">
-	            <a href="<?php the_permalink();?>"><?php echo wp_trim_words(get_the_title(), 40, '...'); ?></a>
+	            <a href="<?php the_permalink();?>"><?php the_title(); ?></a>
 	          </p>
 	        </div>
 	        <?php endwhile;else: ?>
