@@ -244,6 +244,19 @@ function audubon_render_slide_meta_box( $post ) {
         </span>
     </p>
     <?php
+    $link_blank = get_post_meta( $post->ID, '_audubon_slide_link_blank', true );
+    ?>
+    <p style="margin:8px 0 0;">
+        <label>
+            <input type="checkbox" name="audubon_slide_link_blank" value="1"
+                   <?php checked( $link_blank, '1' ); ?>>
+            別ウィンドウ（新しいタブ）で開く
+        </label>
+        <span class="description" style="display:block;margin-left:24px;color:#666;">
+            外部サイトへのリンクなど、現在のページを離れずに開きたい場合にチェック。
+        </span>
+    </p>
+    <?php
 }
 
 add_action( 'save_post', 'audubon_save_meta_boxes', 10, 2 );
@@ -292,6 +305,8 @@ function audubon_save_meta_boxes( $post_id, $post ) {
             isset( $_POST['audubon_slide_description'] ) ? sanitize_textarea_field( wp_unslash( $_POST['audubon_slide_description'] ) ) : '' );
         update_post_meta( $post_id, '_audubon_slide_link',
             isset( $_POST['audubon_slide_link'] ) ? esc_url_raw( wp_unslash( $_POST['audubon_slide_link'] ) ) : '' );
+        update_post_meta( $post_id, '_audubon_slide_link_blank',
+            ! empty( $_POST['audubon_slide_link_blank'] ) ? '1' : '0' );
 
         // 表示順は wp_posts.menu_order に保存。save_post の中で wp_update_post を
         // 呼ぶと再帰するので、フックを一度外してから戻す。
@@ -471,11 +486,13 @@ function audubon_render_slides_banner() {
                                         // 「詳細はコチラ」ボタンは常時表示。
                                         // 編集画面でリンク先URLが設定されていればそれを使い、
                                         // 空欄ならスライド投稿自身のパーマリンクにフォールバック。
-                                        $cta_url = $link ?: get_permalink( $slide );
+                                        $cta_url   = $link ?: get_permalink( $slide );
+                                        $cta_blank = get_post_meta( $slide->ID, '_audubon_slide_link_blank', true ) === '1';
                                         ?>
                                         <?php if ( $cta_url ) : ?>
                                             <p class="audubon-topics__cta-wrap">
-                                                <a class="audubon-topics__cta" href="<?php echo esc_url( $cta_url ); ?>">
+                                                <a class="audubon-topics__cta" href="<?php echo esc_url( $cta_url ); ?>"
+                                                   <?php if ( $cta_blank ) : ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>>
                                                     <span class="audubon-topics__cta-arrow" aria-hidden="true">›</span>
                                                     詳細はコチラ
                                                 </a>
