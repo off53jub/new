@@ -887,3 +887,9 @@ body.audubon-splash-active {
         margin-right: 0 !important;
     }
 }
+
+/* Works 一覧の各サムネ下の「Works」カテゴリ表示を非表示にする
+   （日付とタイトルだけが見えればよい） */
+.works-area .works-list .works-cat {
+    display: none;
+}
