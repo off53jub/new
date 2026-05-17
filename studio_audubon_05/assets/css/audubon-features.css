@@ -893,3 +893,19 @@ body.audubon-splash-active {
 .works-area .works-list .works-cat {
     display: none;
 }
+
+/* Works タイトルが「...」で切れないように、複数行に折り返して全文表示 */
+.works-area .works-list .works-title,
+.works-area .works-list .works-title a {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    display: block;
+    line-height: 1.45;
+}
+.works-area .works-list .works-title {
+    margin-top: 6px;
+    font-size: 0.85rem;
+}

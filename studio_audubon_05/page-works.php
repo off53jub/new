@@ -53,7 +53,7 @@ if ($the_query->have_posts()): while ($the_query->have_posts()): $the_query->the
               <div class="works-cat"><?php the_category();?></div>
             </div>
             <p class="works-title"><a
-                href="<?php the_permalink();?>"><?php echo wp_trim_words(get_the_title(), 30, '...'); ?></a></p>
+                href="<?php the_permalink();?>"><?php the_title(); ?></a></p>
           </div>
         </div><?php endwhile;else: ?>
         <p><?php echo "お探しの記事、ページは見つかりませんでした。"; ?></p>
