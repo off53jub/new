@@ -369,15 +369,24 @@ body.audubon-splash-active {
     object-position: center;
 }
 
-/* スマホでは1列表示（既存テーマの 2列ルールを上書き） */
-@media (max-width: 768px) {
+/* スマホ: Works は 2 列のグリッドで表示（既存テーマの float ルールを上書き） */
+@media (max-width: 767px) {
+    body.home .works-inner,
+    body.page-template-default .works-inner,
+    body:not(.home):not(.page-template-default) .works-area .works-inner {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 14px !important;
+    }
+    body.home .works-inner > .image-wrapper,
+    body.page-template-default .works-inner > .image-wrapper { grid-column: 1 / -1; }
     .home .works-list,
     .page-template-default .works-list,
     body:not(.home):not(.page-template-default) .works-area .works-list {
         width: 100% !important;
         max-width: 100% !important;
-        margin-right: 0 !important;
-        margin-bottom: 24px;
+        margin: 0 !important;
+        float: none !important;
     }
     /* 既存style.cssの `.works-image img { height: 220px }` を打ち消す */
     .works-area .works-list .works-image img {
