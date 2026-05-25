@@ -437,7 +437,7 @@ function audubon_render_slides_banner() {
         return;
     }
     ?>
-    <section id="topics" class="audubon-topics" data-visible="2" data-interval="5500">
+    <section id="topics" class="audubon-topics" data-visible="2" data-interval="2000">
         <div class="contents audubon-topics__inner">
             <h2 class="section-title">Topics</h2>
 
@@ -971,3 +971,29 @@ function audubon_rename_news_to_info( $title, $item ) {
     }
     return $title;
 }
+
+/**
+ * About ページの会社概要テーブルに「代表取締役 谷渕 寿江」行を自動挿入。
+ * - 「◎会社概要」or `company-info-heading` がページ本文に含まれていれば About と判定
+ * - 既に「代表取締役」が入っていれば何もしない（多重挿入回避）
+ * - 行を入れる位置: 既存の「本店」行の直前
+ */
+add_filter( 'the_content', function ( $content ) {
+    if ( is_admin() || ! is_singular() ) {
+        return $content;
+    }
+    if ( strpos( $content, '◎会社概要' ) === false && strpos( $content, 'company-info-heading' ) === false ) {
+        return $content;
+    }
+    if ( strpos( $content, '代表取締役' ) !== false ) {
+        return $content; // 既に手動で入れている場合は触らない
+    }
+    $new_row = "<tr><th>代表取締役</th><td>谷渕 寿江</td></tr>\n";
+    $content = preg_replace(
+        '/(<tr>\s*<th>\s*本店\s*<\/th>)/u',
+        $new_row . '$1',
+        $content,
+        1
+    );
+    return $content;
+}, 20 );
