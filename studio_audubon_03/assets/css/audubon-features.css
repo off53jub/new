@@ -1,0 +1,470 @@
+/* =========================================================
+ * Studio Audubon - 機能拡張用スタイル
+ * 既存テーマ studio_audubon_02 のCSSとは別ファイルで管理。
+ * ========================================================= */
+
+/* =========================================================
+ * 0. スプラッシュ（ローディング画面）
+ *    ホームページ初回表示時に key visual をデカデカと出して
+ *    JS でフェードアウトさせます。
+ * ========================================================= */
+
+.audubon-splash {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.7s ease-out;
+    overflow: hidden;
+}
+.audubon-splash--hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+.audubon-splash__image {
+    /* デフォルト = スマホ：横幅いっぱい、高さは画像のアスペクト比に応じて自動 */
+    width: 100vw;
+    height: auto;
+    max-height: 92vh;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    /* 軽くズームインしてくる演出 */
+    animation: audubon-splash-zoom 2.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* タブレット */
+@media (min-width: 768px) {
+    .audubon-splash__image {
+        width: 100vw;
+    }
+}
+
+/* PC：画面幅いっぱいまで使い、画像を最大限大きく表示 */
+@media (min-width: 1200px) {
+    .audubon-splash__image {
+        width: 100vw;
+        max-width: none;
+    }
+}
+
+@keyframes audubon-splash-zoom {
+    0%   { transform: scale(1.06); opacity: 0; }
+    20%  { opacity: 1; }
+    100% { transform: scale(1.0);  opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .audubon-splash__image { animation: none; }
+}
+
+/* スプラッシュ表示中は背後のスクロールを抑制 */
+body.audubon-splash-active {
+    overflow: hidden;
+}
+
+/* =========================================================
+ * 1. A4ポスター3分割スライダー（トップページ）
+ * ========================================================= */
+
+.audubon-banner {
+    position: relative;
+    width: 100%;
+    margin: 0 auto 2rem;
+    padding: 0 40px;
+    box-sizing: border-box;
+}
+.audubon-banner__viewport {
+    overflow: hidden;
+    width: 100%;
+}
+.audubon-banner__track {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    transition: transform 0.6s cubic-bezier(.23,1,.32,1);
+    will-change: transform;
+}
+.audubon-banner__item {
+    flex: 0 0 calc(100% / 3);
+    box-sizing: border-box;
+    padding: 0 12px;
+    text-align: center;
+}
+.audubon-banner__poster {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 210 / 297;
+    overflow: hidden;
+    background: #f4f4f4;
+}
+.audubon-banner__image,
+.audubon-banner__poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.audubon-banner__caption {
+    margin: 0.75rem 0 0;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: #222;
+}
+.audubon-banner__link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+.audubon-banner__link:hover { opacity: 0.85; }
+
+.audubon-banner__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    border: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 1;
+    z-index: 2;
+}
+.audubon-banner__nav:hover { background: rgba(0,0,0,0.8); }
+.audubon-banner__nav--prev { left: 0; }
+.audubon-banner__nav--next { right: 0; }
+
+/* スマホ・タブレットでは2枚並びに（縦長感を緩和） */
+@media (max-width: 900px) {
+    .audubon-banner { padding: 0 28px; }
+    .audubon-banner__item { flex: 0 0 50%; padding: 0 6px; }
+    .audubon-banner__caption { font-size: 0.85rem; }
+    .audubon-banner__nav {
+        width: 44px;
+        height: 44px;
+        background: rgba(0,0,0,0.7);
+    }
+}
+
+/* =========================================================
+ * 2. アクターページ「最新の出演 / プロフィールをPDFで保存」
+ * ========================================================= */
+
+.audubon-actor-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 24px 0;
+}
+.audubon-actor-links__information,
+.audubon-actor-links__pdf {
+    flex: 1 1 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 18px;
+    border: 1px solid #d8d8d8;
+    border-radius: 6px;
+    color: inherit;
+    text-decoration: none;
+    background: #fff;
+    transition: background 0.2s, border-color 0.2s;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+.audubon-actor-links__information:hover,
+.audubon-actor-links__pdf:hover {
+    background: #f7f5ee;
+    border-color: #b9a76a;
+    text-decoration: none;
+}
+.audubon-actor-links__label {
+    font-size: 0.78rem;
+    color: #b9a76a;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.audubon-actor-links__title {
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.4;
+}
+.audubon-actor-links__date {
+    font-size: 0.85rem;
+    color: #666;
+}
+.audubon-actor-links__pdf {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 600;
+}
+.audubon-actor-links__icon { font-size: 1.2em; }
+
+@media (max-width: 768px) {
+    .audubon-actor-links { gap: 12px; }
+    .audubon-actor-links__information,
+    .audubon-actor-links__pdf {
+        min-height: 56px;
+        padding: 14px 16px;
+        font-size: 1rem;
+    }
+}
+
+/* =========================================================
+ * 3. Worksサムネイル A4ポスター比率
+ * ========================================================= */
+
+.works-area .works-list .works-image {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 210 / 297;
+    overflow: hidden;
+    background: #f4f4f4;
+}
+.works-area .works-list .works-image a,
+.works-area .works-list .works-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.works-area .works-list .works-image img {
+    object-fit: cover;
+    object-position: center;
+}
+
+/* スマホでは1列表示（既存テーマの 2列ルールを上書き） */
+@media (max-width: 768px) {
+    .home .works-list,
+    .page-template-default .works-list,
+    body:not(.home):not(.page-template-default) .works-area .works-list {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-right: 0 !important;
+        margin-bottom: 24px;
+    }
+    /* 既存style.cssの `.works-image img { height: 220px }` を打ち消す */
+    .works-area .works-list .works-image img {
+        height: 100% !important;
+    }
+}
+
+/* =========================================================
+ * 4. ニュース日時（フリーテキスト）の表示
+ *    モバイルでは日付を上、タイトルを下の2行表示に
+ * ========================================================= */
+
+@media (max-width: 600px) {
+    .news-list a { display: block; }
+    .news-list p.news-date,
+    .news-list p.news-title {
+        display: block;
+        width: 100%;
+    }
+    .news-list p.news-date {
+        margin: 0 0 4px !important;
+        font-size: 0.85rem;
+        color: #666;
+    }
+    .news-list p.news-title {
+        margin: 0 !important;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+}
+
+/* =========================================================
+ * 5. タイポグラフィ（モバイル可読性）
+ * ========================================================= */
+
+@media (max-width: 768px) {
+    /* iOSのフォーム自動ズーム回避（最低16px）+ 日本語の行間を広めに */
+    body {
+        font-size: 16px;
+        line-height: 1.75;
+    }
+    p { line-height: 1.8; }
+
+    h1 { font-size: 1.5rem; line-height: 1.35; }
+    h2 { font-size: 1.25rem; line-height: 1.4; }
+    h3 { font-size: 1.125rem; line-height: 1.4; }
+    h4 { font-size: 1.05rem; line-height: 1.4; }
+
+    .section-title {
+        font-size: 1.4rem;
+        margin-bottom: 12px;
+    }
+
+    /* タップ領域最小化（44pxガイドライン） */
+    a, button {
+        -webkit-tap-highlight-color: rgba(185, 167, 106, 0.18);
+    }
+}
+
+/* =========================================================
+ * 6. ヘッダーの高さ圧縮（モバイル）
+ * ========================================================= */
+
+@media (max-width: 768px) {
+    /* スマホヘッダー（ハンバーガー含む） */
+    #smart-head {
+        padding: 6px 12px !important;
+        min-height: 0 !important;
+    }
+    .smart-head-image,
+    .smart-head-image a {
+        display: inline-block;
+        line-height: 0;
+    }
+    .smart-head-image img {
+        max-height: 36px;
+        width: auto;
+    }
+    /* スクロール時の固定ヘッダーはモバイルでは非表示にして本文領域を広く */
+    #fixed-header,
+    #fixed-inner {
+        display: none !important;
+    }
+    /* PCヘッダーがスマホで見えるケースを防止 */
+    header > .header-inner {
+        display: none;
+    }
+}
+
+/* =========================================================
+ * 7. Pickupセクションは画面サイズに関係なく常に2列
+ *    既存 style.css の `@media (max-width: 767px)` の中で
+ *    `#pickup .flex { flex-flow: column }` `width: 100%`
+ *    によって 1列になっていたものを上書きします。
+ * ========================================================= */
+
+#pickup .flex {
+    display: flex !important;
+    flex-flow: row nowrap !important;
+    gap: 4%;
+    width: 100%;
+    margin: 0 auto;
+}
+#pickup .image-wrapper {
+    width: 48% !important;
+    max-width: 48% !important;
+    flex: 0 0 48%;
+    box-sizing: border-box;
+    margin: 0 0 16px !important;
+    text-align: center;
+}
+#pickup .image-wrapper:first-child {
+    margin-right: 0 !important;
+}
+#pickup .image-wrapper img,
+#pickup .image-wrapper iframe {
+    max-width: 100%;
+    height: auto;
+}
+
+/* =========================================================
+ * 8. 印刷スタイル（プロフィールをPDFで保存）
+ *    アクターページの内容だけを綺麗に出力
+ * ========================================================= */
+
+@media print {
+    /* 不要な要素を一括非表示 */
+    header,
+    footer,
+    nav,
+    .drawer,
+    .drawer-nav,
+    .drawer-toggle,
+    .drawer-hamburger,
+    #smart-head,
+    #fixed-header,
+    #fixed-inner,
+    .global-navi,
+    .header-navi,
+    .bread,
+    .single-cat,
+    .previous-next,
+    .audubon-actor-links,
+    #carousel-thumbs,
+    .carousel-control-prev,
+    .carousel-control-next {
+        display: none !important;
+    }
+
+    /* レイアウトをシンプルに */
+    body {
+        background: #fff !important;
+        color: #000 !important;
+        font-size: 12pt;
+        line-height: 1.55;
+    }
+    #wrap, #container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+    }
+    .contents {
+        padding: 0 !important;
+    }
+    a {
+        color: inherit !important;
+        text-decoration: none !important;
+    }
+
+    /* Bootstrap col-* を縦積みに（プリント幅に合わせる） */
+    .row > [class*="col-"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+
+    /* アクター画像カルーセル：先頭の画像だけ表示 */
+    #myCarousel .carousel-item { display: none !important; }
+    #myCarousel .carousel-item.active { display: block !important; }
+    .carousel-item img.big-img {
+        max-height: 320px !important;
+        height: auto !important;
+        object-fit: contain !important;
+        width: auto !important;
+        max-width: 100% !important;
+        margin: 0 auto 16px !important;
+    }
+
+    /* 見出し直後の改ページを抑制 */
+    h1, h2, h3, h4, h5, h6 {
+        page-break-after: avoid;
+        break-after: avoid;
+    }
+
+    /* 項目が改ページで分断されないように */
+    .player-name,
+    .list-group-item {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .actor-work-heading {
+        margin-top: 16pt !important;
+        margin-bottom: 6pt !important;
+    }
+
+    .list-group {
+        list-style: disc;
+        padding-left: 18pt;
+    }
+    .list-group-item {
+        border: 0 !important;
+        padding: 2pt 0 !important;
+    }
+}
