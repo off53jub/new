@@ -840,7 +840,8 @@ function audubon_render_pickup_meta_box( $post ) {
     $link    = get_post_meta( $post->ID, '_audubon_pickup_link', true );
     ?>
     <p style="color:#666;margin:0 0 10px;">
-        <strong>画像で表示する場合</strong>: アイキャッチ画像を設定してください。<br>
+        <strong>画像で表示する場合</strong>: 右側の「アイキャッチ画像」を設定してください（<strong>16:9 の横長画像を推奨</strong>。異なる比率でも16:9枠に自動でトリミング表示されます）。<br>
+        <strong>クリックで別ページに飛ばす場合</strong>: 下の「リンク先URL」を入力すると、画像タップでそのURLへ移動します。<br>
         <strong>YouTube動画を表示する場合</strong>: 下のフィールドに iframe コードまたは YouTube URL を入力してください（画像が無くてもOK）。
     </p>
     <p>

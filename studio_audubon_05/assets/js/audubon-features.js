@@ -22,6 +22,7 @@
         var interval = parseInt(root.dataset.interval, 10) || 5500;
         var index = 0;
         var timer = null;
+        var paused = false; // カーソルが乗っている／フォーカス中は自動送りを止めるフラグ
         var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
         // モバイル時に visible が動的に1になるかチェック（CSSで flex: 0 0 100%）。
@@ -112,7 +113,12 @@
         function start() {
             if (reduced || items.length <= visible) return;
             stop();
-            timer = window.setInterval(next, interval);
+            // タイマー自体は動かし続け、paused の間だけ送りをスキップする。
+            // これで「カーソルを乗せる→止まる」が2回目以降も毎回効く。
+            timer = window.setInterval(function () {
+                if (paused) return;
+                next();
+            }, interval);
         }
 
         function stop() {
@@ -127,8 +133,14 @@
         if (prevBtn) prevBtn.addEventListener('click', function () { stop(); prev(); start(); });
         if (nextBtn) nextBtn.addEventListener('click', function () { stop(); next(); start(); });
 
-        root.addEventListener('mouseenter', stop);
-        root.addEventListener('mouseleave', start);
+        // ホバーで一時停止・離れたら再開。
+        // 以前は mouseenter でタイマーを破棄／mouseleave で作り直す方式だったため、
+        // 復帰後の状態次第で2回目以降うまく止まらないことがあった。フラグ方式に変更して
+        // 毎回確実に反応するようにする。タッチ・キーボード操作でも止まるよう focus も拾う。
+        root.addEventListener('mouseenter', function () { paused = true; });
+        root.addEventListener('mouseleave', function () { paused = false; });
+        root.addEventListener('focusin',  function () { paused = true; });
+        root.addEventListener('focusout', function () { paused = false; });
         window.addEventListener('resize', function () { update(false); });
 
         update(false);

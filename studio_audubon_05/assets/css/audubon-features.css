@@ -97,6 +97,7 @@ body.audubon-splash-active {
 }
 .audubon-topics__track {
     display: flex;
+    align-items: stretch; /* 同時に見える全カードを一番高いカードに合わせて縦を揃える */
     list-style: none;
     margin: 0;
     padding: 0;
@@ -718,9 +719,15 @@ body.audubon-splash-active {
     border: 0;
     display: block;
 }
+.audubon-pickup__item a {
+    display: block; /* 画像全体（16:9の領域まるごと）をタップ可能にする */
+}
 .audubon-pickup__item img {
     width: 100%;
+    aspect-ratio: 16 / 9; /* どんな比率の画像でも 16:9 の枠に収める */
     height: auto;
+    object-fit: cover;    /* はみ出す分は中央基準でトリミング */
+    object-position: center;
     display: block;
 }
 .audubon-pickup__caption {
