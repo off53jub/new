@@ -865,12 +865,10 @@ function audubon_render_pickup_meta_box( $post ) {
     wp_nonce_field( 'audubon_pickup_meta', 'audubon_pickup_meta_nonce' );
     $youtube  = get_post_meta( $post->ID, '_audubon_pickup_youtube', true );
     $link     = get_post_meta( $post->ID, '_audubon_pickup_link', true );
-    $download = get_post_meta( $post->ID, '_audubon_pickup_download', true );
     ?>
     <p style="color:#666;margin:0 0 10px;">
         <strong>画像で表示する場合</strong>: 右側の「アイキャッチ画像」を設定してください（<strong>16:9 の横長画像を推奨</strong>。異なる比率でも16:9枠に自動でトリミング表示されます）。<br>
         <strong>クリックで別ページに飛ばす場合</strong>: 下の「リンク先URL」を入力すると、画像タップでそのURLへ移動します。<br>
-        <strong>ファイルをダウンロードさせる場合</strong>: 下の「ダウンロード用ファイル」を設定すると、/pickup/ ページに「ダウンロード」ボタンが表示されます。<br>
         <strong>YouTube動画を表示する場合</strong>: 下のフィールドに iframe コードまたは YouTube URL を入力してください（画像が無くてもOK）。
     </p>
     <p>
@@ -879,47 +877,12 @@ function audubon_render_pickup_meta_box( $post ) {
                value="<?php echo esc_attr( $link ); ?>" style="width:100%;" placeholder="https://...">
     </p>
     <p>
-        <label for="audubon_pickup_download"><strong>ダウンロード用ファイル（任意）</strong></label><br>
-        <span style="color:#666;font-size:12px;">「ダウンロード」ボタンで配布するファイル（チラシPDF・高解像度画像など）。未指定の場合は、表示中のアイキャッチ画像がそのままダウンロードできます。</span><br>
-        <input type="text" id="audubon_pickup_download" name="audubon_pickup_download"
-               value="<?php echo esc_attr( $download ); ?>" style="width:66%;" placeholder="https://...">
-        <button type="button" class="button" id="audubon_pickup_download_pick">ファイルを選択</button>
-        <button type="button" class="button" id="audubon_pickup_download_clear">クリア</button>
-    </p>
-    <script>
-    (function ($) {
-        $('#audubon_pickup_download_pick').on('click', function (e) {
-            e.preventDefault();
-            if ( typeof wp === 'undefined' || ! wp.media ) return;
-            var frame = wp.media({ title: 'ダウンロード用ファイルを選択', button: { text: '選択' }, multiple: false });
-            frame.on('select', function () {
-                var att = frame.state().get('selection').first().toJSON();
-                $('#audubon_pickup_download').val(att.url);
-            });
-            frame.open();
-        });
-        $('#audubon_pickup_download_clear').on('click', function (e) {
-            e.preventDefault();
-            $('#audubon_pickup_download').val('');
-        });
-    })(jQuery);
-    </script>
-    <p>
         <label for="audubon_pickup_youtube"><strong>YouTube埋込コード または URL（任意）</strong></label><br>
         <textarea id="audubon_pickup_youtube" name="audubon_pickup_youtube" rows="3" style="width:100%;font-family:monospace;"
                   placeholder="https://www.youtube.com/watch?v=... または iframeコード"><?php echo esc_textarea( $youtube ); ?></textarea>
     </p>
     <?php
 }
-
-/* Pickup編集画面でメディアライブラリ（ファイル選択ボタン）を使えるようにする */
-add_action( 'admin_enqueue_scripts', function ( $hook ) {
-    if ( ! in_array( $hook, array( 'post.php', 'post-new.php' ), true ) ) return;
-    $screen = get_current_screen();
-    if ( $screen && $screen->post_type === 'audubon_pickup' ) {
-        wp_enqueue_media();
-    }
-} );
 
 add_action( 'save_post_audubon_pickup', function ( $post_id ) {
     if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
@@ -934,8 +897,6 @@ add_action( 'save_post_audubon_pickup', function ( $post_id ) {
                 'allow' => true, 'allowfullscreen' => true, 'title' => true ) ) ) : '' );
     update_post_meta( $post_id, '_audubon_pickup_link',
         isset( $_POST['audubon_pickup_link'] ) ? esc_url_raw( wp_unslash( $_POST['audubon_pickup_link'] ) ) : '' );
-    update_post_meta( $post_id, '_audubon_pickup_download',
-        isset( $_POST['audubon_pickup_download'] ) ? esc_url_raw( wp_unslash( $_POST['audubon_pickup_download'] ) ) : '' );
 } );
 
 /**

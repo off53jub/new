@@ -23,11 +23,8 @@ get_header(); ?>
       <?php if ( have_posts() ) : ?>
       <div class="audubon-pickup audubon-pickup--archive">
         <?php while ( have_posts() ) : the_post();
-            $link     = get_post_meta( get_the_ID(), '_audubon_pickup_link', true );
-            $download = get_post_meta( get_the_ID(), '_audubon_pickup_download', true );
-            $img_url  = has_post_thumbnail() ? wp_get_attachment_image_url( get_post_thumbnail_id(), 'full' ) : '';
-            $dl_url   = $download ? $download : $img_url; // 未指定なら表示中の画像をダウンロード
-            $thumb    = has_post_thumbnail()
+            $link  = get_post_meta( get_the_ID(), '_audubon_pickup_link', true );
+            $thumb = has_post_thumbnail()
                 ? get_the_post_thumbnail( get_the_ID(), 'large', array(
                       'loading' => 'lazy',
                       'alt'     => esc_attr( get_the_title() ),
@@ -45,12 +42,6 @@ get_header(); ?>
 
           <?php if ( get_the_title() ) : ?>
           <figcaption class="audubon-pickup__caption"><?php echo esc_html( get_the_title() ); ?></figcaption>
-          <?php endif; ?>
-
-          <?php if ( $dl_url ) : ?>
-          <a class="audubon-pickup__download" href="<?php echo esc_url( $dl_url ); ?>" download>
-            <span class="audubon-pickup__download-icon" aria-hidden="true">&#x2193;</span> ダウンロード
-          </a>
           <?php endif; ?>
         </figure>
         <?php endwhile; ?>

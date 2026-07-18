@@ -746,26 +746,6 @@ body.audubon-splash-active {
 .audubon-pickup--archive .audubon-pickup__item {
     text-align: center;
 }
-.audubon-pickup__download {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    margin: 12px 0 4px;
-    padding: 9px 26px;
-    background: #4B0000;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    line-height: 1.2;
-    min-height: 44px;          /* スマホで押しやすいタップ領域 */
-    box-sizing: border-box;
-    transition: opacity 0.2s ease;
-}
-.audubon-pickup__download:hover,
-.audubon-pickup__download:focus { opacity: 0.85; color: #fff; }
-.audubon-pickup__download-icon { font-weight: 700; }
 
 /* =========================================================
  * 14. 印刷スタイル強化（C-5）
