@@ -722,6 +722,7 @@ body.audubon-splash-active {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
     margin: 0 auto;
+    align-items: start; /* 高さの違う画像でも各アイテムは上端に揃える */
 }
 @media (max-width: 600px) {
     .audubon-pickup { grid-template-columns: 1fr; }
@@ -732,19 +733,16 @@ body.audubon-splash-active {
 }
 .audubon-pickup__item iframe {
     width: 100%;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 16 / 9; /* YouTube動画は従来どおり16:9 */
     border: 0;
     display: block;
 }
 .audubon-pickup__item a {
-    display: block; /* 画像全体（16:9の領域まるごと）をタップ可能にする */
+    display: block; /* 画像全体をタップ可能にする */
 }
 .audubon-pickup__item img {
     width: 100%;
-    aspect-ratio: 16 / 9; /* どんな比率の画像でも 16:9 の枠に収める */
-    height: auto;
-    object-fit: cover;    /* はみ出す分は中央基準でトリミング */
-    object-position: center;
+    height: auto;         /* 画像そのものの縦横比で表示（切り取らない・縦画像もOK） */
     display: block;
 }
 .audubon-pickup__caption {
