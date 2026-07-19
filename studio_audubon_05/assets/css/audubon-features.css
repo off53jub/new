@@ -79,6 +79,23 @@ body.audubon-splash-active {
     color: inherit;
     box-sizing: border-box;
 }
+/* スマホでタップして一時停止しているときの表示（タップで再開できることを知らせる） */
+.audubon-topics--paused::after {
+    content: "❙❙ 停止中（タップで再開）";
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    font-size: 11px;
+    letter-spacing: .06em;
+    color: #fff;
+    background: rgba(0, 0, 0, .55);
+    padding: 4px 12px;
+    border-radius: 14px;
+    white-space: nowrap;
+    pointer-events: none;
+}
 .audubon-topics__inner {
     /* .contents（既存）の中で配置。タイトル下に余白だけ追加 */
     padding-top: 4px;

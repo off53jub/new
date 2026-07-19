@@ -133,14 +133,29 @@
         if (prevBtn) prevBtn.addEventListener('click', function () { stop(); prev(); start(); });
         if (nextBtn) nextBtn.addEventListener('click', function () { stop(); next(); start(); });
 
-        // ホバーで一時停止・離れたら再開。
-        // 以前は mouseenter でタイマーを破棄／mouseleave で作り直す方式だったため、
-        // 復帰後の状態次第で2回目以降うまく止まらないことがあった。フラグ方式に変更して
-        // 毎回確実に反応するようにする。タッチ・キーボード操作でも止まるよう focus も拾う。
-        root.addEventListener('mouseenter', function () { paused = true; });
-        root.addEventListener('mouseleave', function () { paused = false; });
-        root.addEventListener('focusin',  function () { paused = true; });
-        root.addEventListener('focusout', function () { paused = false; });
+        // ---- 一時停止の制御 ----
+        // ホバーできる端末（PC）: カーソルを乗せている間だけ止める（離れたら再開）。
+        // ホバーできない端末（スマホ等）: スライダーをタップすると停止、もう一度タップで再開。
+        //   → PC のホバー停止と同じ「止めたら止まる」体験をタッチでも実現する。
+        var canHover = !(window.matchMedia && window.matchMedia('(hover: none)').matches);
+
+        if (canHover) {
+            // フラグ方式：タイマーは動かし続け paused の間だけ送りをスキップするので毎回効く。
+            root.addEventListener('mouseenter', function () { paused = true; });
+            root.addEventListener('mouseleave', function () { paused = false; });
+            // キーボード操作でも止まる
+            root.addEventListener('focusin',  function () { paused = true; });
+            root.addEventListener('focusout', function () { paused = false; });
+        } else {
+            // タッチ端末：スライダー本体のタップで停止／再開をトグル。
+            // 前後ボタン（button）と「詳細はコチラ」等のリンク（a）のタップは通常動作を優先。
+            root.addEventListener('click', function (e) {
+                if (e.target.closest('a, button')) return;
+                paused = !paused;
+                root.classList.toggle('audubon-topics--paused', paused);
+            });
+        }
+
         window.addEventListener('resize', function () { update(false); });
 
         update(false);
