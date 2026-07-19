@@ -717,19 +717,29 @@ body.audubon-splash-active {
 /* =========================================================
  * 13. 動的Pickupセクション（B-2）
  * ========================================================= */
+/* 既定（JS無効時）は1列で縦積み。JSが背の低い列へ詰める石積みに組み替える */
 .audubon-pickup {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
     margin: 0 auto;
-    align-items: start; /* 高さの違う画像でも各アイテムは上端に揃える */
-}
-@media (max-width: 600px) {
-    .audubon-pickup { grid-template-columns: 1fr; }
 }
 .audubon-pickup__item {
-    margin: 0;
+    margin: 0 0 20px;
     position: relative;
+}
+/* JSが列に振り分けたとき（石積み：左右の列は上端から揃い、すき間なく詰まる） */
+.audubon-pickup.is-masonry {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+.audubon-pickup.is-masonry .audubon-pickup__col {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.audubon-pickup.is-masonry .audubon-pickup__item {
+    margin: 0;
 }
 .audubon-pickup__item iframe {
     width: 100%;

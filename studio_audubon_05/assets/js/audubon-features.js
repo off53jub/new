@@ -206,11 +206,62 @@
         }
     }
 
+    /**
+     * Pickup の石積み（masonry）
+     * 縦横バラバラの画像でも、背の低い列へ順に詰めて大きなすき間をなくす。
+     * 各列は上端から始まるので左右が揃う。JSが無効なら1列で縦積み（CSS既定）。
+     */
+    function initPickupMasonry(grid) {
+        var items = Array.prototype.slice.call(grid.querySelectorAll('.audubon-pickup__item'));
+        if (items.length < 2) return;
+        var builtCols = 0;
+
+        function ratioOf(it) {
+            var img = it.querySelector('img');
+            if (img && img.naturalWidth) return img.naturalHeight / img.naturalWidth;
+            if (it.querySelector('iframe')) return 9 / 16; // YouTube等は16:9
+            return 1;
+        }
+        function layout() {
+            var cols = grid.clientWidth < 600 ? 1 : 2;
+            if (cols === builtCols) return;
+            builtCols = cols;
+            grid.innerHTML = '';
+            if (cols === 1) {
+                grid.classList.remove('is-masonry');
+                items.forEach(function (it) { grid.appendChild(it); });
+                return;
+            }
+            grid.classList.add('is-masonry');
+            var colEls = [], colH = [];
+            for (var c = 0; c < cols; c++) {
+                var d = document.createElement('div');
+                d.className = 'audubon-pickup__col';
+                grid.appendChild(d); colEls.push(d); colH.push(0);
+            }
+            items.forEach(function (it) {
+                var mi = 0;
+                for (var c = 1; c < cols; c++) { if (colH[c] < colH[mi]) mi = c; }
+                colEls[mi].appendChild(it); colH[mi] += ratioOf(it);
+            });
+        }
+        // 画像サイズが確定したら組み直す
+        items.forEach(function (it) {
+            var img = it.querySelector('img');
+            if (img && !img.complete) { img.addEventListener('load', function () { builtCols = 0; layout(); }); }
+        });
+        layout();
+        var t; window.addEventListener('resize', function () { window.clearTimeout(t); t = window.setTimeout(layout, 150); });
+    }
+
     ready(function () {
         initSplash();
 
         var topics = document.querySelectorAll('.audubon-topics');
         Array.prototype.forEach.call(topics, initTopics);
+
+        var pickups = document.querySelectorAll('.audubon-pickup');
+        Array.prototype.forEach.call(pickups, initPickupMasonry);
 
         // 「プロフィールをPDFで保存」ボタン → ブラウザの印刷機能を呼び出す
         document.addEventListener('click', function (e) {
