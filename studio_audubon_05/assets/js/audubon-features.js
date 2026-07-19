@@ -147,13 +147,13 @@
             root.addEventListener('focusin',  function () { paused = true; });
             root.addEventListener('focusout', function () { paused = false; });
         } else {
-            // タッチ端末：スライダー本体のタップで停止／再開をトグル。
-            // 前後ボタン（button）と「詳細はコチラ」等のリンク（a）のタップは通常動作を優先。
-            root.addEventListener('click', function (e) {
-                if (e.target.closest('a, button')) return;
-                paused = !paused;
-                root.classList.toggle('audubon-topics--paused', paused);
-            });
+            // タッチ端末：指で押さえている間だけ止める（離すと再開）。
+            // PC のホバー停止と同じく「触れている間は止まる」挙動をタッチで再現。
+            var holdPause  = function () { paused = true;  root.classList.add('audubon-topics--paused'); };
+            var holdResume = function () { paused = false; root.classList.remove('audubon-topics--paused'); };
+            root.addEventListener('touchstart',  holdPause,  { passive: true });
+            root.addEventListener('touchend',     holdResume);
+            root.addEventListener('touchcancel',  holdResume);
         }
 
         window.addEventListener('resize', function () { update(false); });

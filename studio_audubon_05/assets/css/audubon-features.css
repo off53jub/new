@@ -79,9 +79,9 @@ body.audubon-splash-active {
     color: inherit;
     box-sizing: border-box;
 }
-/* スマホでタップして一時停止しているときの表示（タップで再開できることを知らせる） */
+/* スマホで指を押さえて一時停止しているときの表示 */
 .audubon-topics--paused::after {
-    content: "❙❙ 停止中（タップで再開）";
+    content: "❙❙ 停止中";
     position: absolute;
     top: 8px;
     left: 50%;
