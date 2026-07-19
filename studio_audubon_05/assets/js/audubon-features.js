@@ -223,9 +223,9 @@
             return 1;
         }
         function layout() {
-            // PCは3列（縦長画像が横一列に3つ並ぶ）／タブレット2列／スマホ1列
+            // PCは4列／タブレット2列／スマホ1列
             var w = grid.clientWidth;
-            var cols = w < 560 ? 1 : (w < 880 ? 2 : 3);
+            var cols = w < 560 ? 1 : (w < 880 ? 2 : 4);
             if (cols === builtCols) return;
             builtCols = cols;
             grid.innerHTML = '';
