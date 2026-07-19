@@ -920,7 +920,7 @@ function audubon_render_pickup_section() {
             $link    = get_post_meta( $item->ID, '_audubon_pickup_link', true );
             $thumb   = get_the_post_thumbnail( $item->ID, 'large', array( 'loading' => 'lazy' ) );
             ?>
-            <figure class="audubon-pickup__item image-wrapper">
+            <figure class="audubon-pickup__item">
                 <?php if ( $youtube ) : ?>
                     <?php
                     // URLだけならiframeに変換

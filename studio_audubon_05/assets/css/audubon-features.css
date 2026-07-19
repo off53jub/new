@@ -720,10 +720,12 @@ body.audubon-splash-active {
 /* 既定（JS無効時）は1列で縦積み。JSが背の低い列へ詰める石積みに組み替える */
 .audubon-pickup {
     margin: 0 auto;
+    max-width: 860px; /* 横に広がりすぎないよう中央に寄せる */
 }
 .audubon-pickup__item {
     margin: 0 0 20px;
     position: relative;
+    width: auto; /* 旧 #pickup .image-wrapper{width:50%} の影響を打ち消す */
 }
 /* JSが列に振り分けたとき（石積み：左右の列は上端から揃い、すき間なく詰まる） */
 .audubon-pickup.is-masonry {

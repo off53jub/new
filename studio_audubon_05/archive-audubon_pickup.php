@@ -31,7 +31,7 @@ get_header(); ?>
                   ) )
                 : '';
             ?>
-        <figure class="audubon-pickup__item image-wrapper">
+        <figure class="audubon-pickup__item">
           <?php if ( $thumb ) : ?>
               <?php if ( $link ) : ?>
               <a href="<?php echo esc_url( $link ); ?>"><?php echo $thumb; ?></a>
