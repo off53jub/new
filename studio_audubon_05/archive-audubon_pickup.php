@@ -34,7 +34,7 @@ get_header(); ?>
         <figure class="audubon-pickup__item">
           <?php if ( $thumb ) : ?>
               <?php if ( $link ) : ?>
-              <a href="<?php echo esc_url( $link ); ?>"><?php echo $thumb; ?></a>
+              <a href="<?php echo esc_url( $link ); ?>" target="_blank" rel="noopener noreferrer"><?php echo $thumb; ?></a>
               <?php else : ?>
               <?php echo $thumb; ?>
               <?php endif; ?>

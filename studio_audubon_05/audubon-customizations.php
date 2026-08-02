@@ -933,7 +933,7 @@ function audubon_render_pickup_section() {
                     }
                     ?>
                 <?php elseif ( $thumb ) :
-                    if ( $link ) echo '<a href="' . esc_url( $link ) . '">';
+                    if ( $link ) echo '<a href="' . esc_url( $link ) . '" target="_blank" rel="noopener noreferrer">';
                     echo $thumb;
                     if ( $link ) echo '</a>';
                 endif; ?>
