@@ -223,9 +223,9 @@
             return 1;
         }
         function layout() {
-            // PCは4列／タブレット2列／スマホ1列
+            // PCは4列／タブレット・スマホは2列（Works の並びに合わせる）
             var w = grid.clientWidth;
-            var cols = w < 560 ? 1 : (w < 880 ? 2 : 4);
+            var cols = w < 880 ? 2 : 4;
             if (cols === builtCols) return;
             builtCols = cols;
             grid.innerHTML = '';
